@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Autoplay from "embla-carousel-autoplay";
 import ruLogo from "@/assets/ru-logo.png";
 
 const Index = () => {
@@ -26,7 +27,7 @@ const Index = () => {
             <img src={ruLogo} alt="Redeemer's University Logo" className="h-12 md:h-16" />
           </div>
           <div className="text-right">
-            <h2 className="text-lg md:text-2xl font-bold text-primary">Student Support Portal</h2>
+            <h2 className="hidden md:block text-2xl font-bold text-primary">Student Support Portal</h2>
           </div>
         </div>
       </header>
@@ -44,7 +45,18 @@ const Index = () => {
       {/* Main Content Cards */}
       <section className="container py-8 md:py-12 px-4">
         {isMobile ? (
-          <Carousel className="max-w-sm mx-auto mb-12">
+          <Carousel 
+            className="max-w-sm mx-auto mb-12"
+            plugins={[
+              Autoplay({
+                delay: 3000,
+              }),
+            ]}
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+          >
             <CarouselContent>
               <CarouselItem>
                 <Card>
@@ -138,14 +150,14 @@ const Index = () => {
 
         {/* How It Works Section */}
         <div className="max-w-5xl mx-auto bg-card rounded-lg p-6 md:p-8">
-          <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">How It Works</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 text-center md:text-left">How It Works</h2>
+          <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-4 md:gap-6">
             {steps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg md:text-xl font-bold mx-auto mb-3 md:mb-4">
+              <div key={index} className="flex md:flex-col items-start md:items-center md:text-center gap-4 md:gap-0">
+                <div className="h-10 w-10 md:h-12 md:w-12 flex-shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg md:text-xl font-bold md:mx-auto mb-0 md:mb-4">
                   {index + 1}
                 </div>
-                <p className="text-sm text-foreground">{step}</p>
+                <p className="text-sm text-foreground flex-1">{step}</p>
               </div>
             ))}
           </div>
