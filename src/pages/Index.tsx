@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Ticket, Search, UserCog } from "lucide-react";
+import { Ticket, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ruLogo from "@/assets/ru-logo.png";
@@ -41,7 +41,7 @@ const Index = () => {
 
       {/* Main Content Cards */}
       <section className="container py-12">
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-secondary to-[hsl(280,60%,60%)] flex items-center justify-center mb-4">
@@ -67,7 +67,7 @@ const Index = () => {
               <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-info to-[hsl(210,85%,55%)] flex items-center justify-center mb-4">
                 <Search className="h-8 w-8 text-white" />
               </div>
-              <CardTitle className="text-xl">Access Existing Ticket</CardTitle>
+              <CardTitle className="text-xl">Track Existing Ticket</CardTitle>
               <CardDescription className="text-base">
                 Check the status of your submitted tickets and view responses from our support team.
               </CardDescription>
@@ -78,26 +78,6 @@ const Index = () => {
                 className="w-full bg-gradient-to-r from-info to-[hsl(210,85%,55%)] hover:opacity-90"
               >
                 Track Now →
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-secondary to-[hsl(280,60%,60%)] flex items-center justify-center mb-4">
-                <UserCog className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-xl">Staff Support Login</CardTitle>
-              <CardDescription className="text-base">
-                Access the staff dashboard to manage and respond to student support tickets.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="outline"
-                className="w-full border-secondary text-secondary hover:bg-secondary/10"
-              >
-                Staff Login →
               </Button>
             </CardContent>
           </Card>
