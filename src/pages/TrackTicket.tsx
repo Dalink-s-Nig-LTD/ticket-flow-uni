@@ -94,26 +94,26 @@ const TrackTicket = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container max-w-4xl py-8">
+      <div className="container max-w-4xl py-6 md:py-8 px-4">
         <Button
           variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-6"
+          className="mb-4 md:mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Button>
 
         <Card className="mb-6">
-          <CardHeader className="space-y-3 bg-primary text-primary-foreground rounded-t-lg">
-            <CardTitle className="text-3xl font-bold">Track Your Ticket</CardTitle>
-            <CardDescription className="text-primary-foreground/90">
+          <CardHeader className="space-y-2 md:space-y-3 bg-primary text-primary-foreground rounded-t-lg p-4 md:p-6">
+            <CardTitle className="text-xl md:text-3xl font-bold">Track Your Ticket</CardTitle>
+            <CardDescription className="text-primary-foreground/90 text-sm md:text-base">
               Enter your email address and ticket ID to check the status of your support ticket.
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 md:pt-6 p-4 md:p-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
                 <FormField
                   control={form.control}
                   name="email"
@@ -164,42 +164,42 @@ const TrackTicket = () => {
 
         {ticketData && (
           <Card>
-            <CardHeader className="bg-muted/50">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl">Ticket Information</CardTitle>
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${getStatusColor(ticketData.status)}`}>
+            <CardHeader className="bg-muted/50 p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <CardTitle className="text-xl md:text-2xl">Ticket Information</CardTitle>
+                <div className={`flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full border text-sm ${getStatusColor(ticketData.status)}`}>
                   {getStatusIcon(ticketData.status)}
                   <span className="font-semibold">{ticketData.status}</span>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-6 space-y-6">
-              <div className="bg-primary/5 p-6 rounded-lg border border-primary/10">
-                <h3 className="text-lg font-semibold text-primary mb-4">Basic Information</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
+            <CardContent className="pt-4 md:pt-6 space-y-4 md:space-y-6 p-4 md:p-6">
+              <div className="bg-primary/5 p-4 md:p-6 rounded-lg border border-primary/10">
+                <h3 className="text-base md:text-lg font-semibold text-primary mb-3 md:mb-4">Basic Information</h3>
+                <div className="space-y-2 md:space-y-3 text-sm md:text-base">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Ticket ID:</span>
-                    <span className="font-mono font-bold text-primary">{ticketData.ticket_id}</span>
+                    <span className="font-mono font-bold text-primary break-all">{ticketData.ticket_id}</span>
                   </div>
                   <Separator />
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Name:</span>
                     <span className="font-medium">{ticketData.name}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Matric Number:</span>
                     <span className="font-medium">{ticketData.matric_number}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Department:</span>
                     <span className="font-medium">{ticketData.department}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-muted/30 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4">Complaint Details</h3>
-                <div className="space-y-3">
+              <div className="bg-muted/30 p-4 md:p-6 rounded-lg">
+                <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Complaint Details</h3>
+                <div className="space-y-2 md:space-y-3 text-sm md:text-base">
                   <div>
                     <span className="text-muted-foreground text-sm">Nature of Complaint:</span>
                     <p className="font-medium mt-1">{ticketData.nature_of_complaint}</p>
@@ -217,14 +217,14 @@ const TrackTicket = () => {
                 </div>
               </div>
 
-              <div className="bg-accent/10 p-6 rounded-lg border border-accent/20">
-                <h3 className="text-lg font-semibold mb-4">Timeline</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
+              <div className="bg-accent/10 p-4 md:p-6 rounded-lg border border-accent/20">
+                <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Timeline</h3>
+                <div className="space-y-2 md:space-y-3 text-sm md:text-base">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Submitted:</span>
                     <span className="font-medium">{formatDate(ticketData.created_at)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                     <span className="text-muted-foreground">Last Updated:</span>
                     <span className="font-medium">{formatDate(ticketData.updated_at)}</span>
                   </div>
@@ -232,9 +232,9 @@ const TrackTicket = () => {
               </div>
 
               {ticketData.staff_response && (
-                <div className="bg-success/10 p-6 rounded-lg border border-success/20">
-                  <h3 className="text-lg font-semibold text-success mb-3">Staff Response</h3>
-                  <p className="text-foreground/90">{ticketData.staff_response}</p>
+                <div className="bg-success/10 p-4 md:p-6 rounded-lg border border-success/20">
+                  <h3 className="text-base md:text-lg font-semibold text-success mb-3">Staff Response</h3>
+                  <p className="text-foreground/90 text-sm md:text-base">{ticketData.staff_response}</p>
                 </div>
               )}
             </CardContent>

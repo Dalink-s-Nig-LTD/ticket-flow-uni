@@ -120,27 +120,27 @@ const CreateTicket = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container max-w-4xl py-8">
+      <div className="container max-w-4xl py-6 md:py-8 px-4">
         <Button
           variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-6"
+          className="mb-4 md:mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Button>
 
         <Card>
-          <CardHeader className="space-y-3 bg-primary text-primary-foreground rounded-t-lg">
-            <CardTitle className="text-3xl font-bold">Create Support Ticket</CardTitle>
-            <CardDescription className="text-primary-foreground/90">
+          <CardHeader className="space-y-2 md:space-y-3 bg-primary text-primary-foreground rounded-t-lg p-4 md:p-6">
+            <CardTitle className="text-xl md:text-3xl font-bold">Create Support Ticket</CardTitle>
+            <CardDescription className="text-primary-foreground/90 text-sm md:text-base">
               Please provide all necessary details for your complaint. All fields marked with * are required.
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 md:pt-6 p-4 md:p-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                   <FormField
                     control={form.control}
                     name="matricNumber"
@@ -170,7 +170,7 @@ const CreateTicket = () => {
                   />
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                   <FormField
                     control={form.control}
                     name="email"
@@ -200,7 +200,7 @@ const CreateTicket = () => {
                   />
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                   <FormField
                     control={form.control}
                     name="department"
@@ -273,7 +273,7 @@ const CreateTicket = () => {
                   )}
                 />
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
                   <Button
                     type="submit"
                     disabled={isSubmitting}
@@ -287,6 +287,7 @@ const CreateTicket = () => {
                     variant="outline"
                     onClick={() => form.reset()}
                     disabled={isSubmitting}
+                    className="sm:w-auto"
                   >
                     Reset Form
                   </Button>
