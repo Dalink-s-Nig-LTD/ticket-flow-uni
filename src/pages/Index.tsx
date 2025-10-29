@@ -1,129 +1,136 @@
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, GraduationCap, Mail, FileText } from "lucide-react";
+import { Ticket, Search, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  const features = [
-    {
-      icon: FileText,
-      title: "Structured Submissions",
-      description: "All complaint details captured before submission",
-    },
-    {
-      icon: Mail,
-      title: "Auto-Routing",
-      description: "Tickets automatically sent to the right department",
-    },
-    {
-      icon: Search,
-      title: "Easy Tracking",
-      description: "Monitor your ticket status in real-time",
-    },
+  const steps = [
+    "Create your ticket with all necessary details",
+    "System routes to the correct department automatically",
+    "Receive confirmation email with ticket ID",
+    "Track progress and get responses via email"
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-sm">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              University Support
-            </span>
+      <header className="border-b bg-card">
+        <div className="container flex h-20 items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
+                RU
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-primary leading-tight">REDEEMER'S<br/>UNIVERSITY</h1>
+                <p className="text-xs text-muted-foreground italic">...running with the vision</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <h2 className="text-2xl font-bold text-primary">Student Support Portal</h2>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container py-16 md:py-24">
-        <div className="text-center space-y-6 mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Welcome to{" "}
-            <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-              University Support Portal
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Create a ticket for your complaint so the university can monitor and respond effectively.
-            Fast, organized, and transparent.
+      <section className="relative bg-gradient-to-br from-[hsl(245,60%,35%)] via-[hsl(230,60%,45%)] to-[hsl(220,70%,50%)] text-white py-20">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0wIDQwTDQwIDBaTTQwIDQwTDAgMFoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA1Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+')] opacity-30"></div>
+        <div className="container relative z-10 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Welcome to the Support Center</h2>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-95">
+            Create a ticket for your complaint so the university can monitor and respond effectively. Our dedicated team is here to help you.
           </p>
         </div>
+      </section>
 
-        {/* Main Action Cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
-          <Card className="group hover:shadow-xl transition-all duration-300 border-primary/20 hover:border-primary/40 cursor-pointer">
-            <CardHeader className="pb-4">
-              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Plus className="h-6 w-6 text-primary-foreground" />
+      {/* Main Content Cards */}
+      <section className="container py-12">
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-secondary to-[hsl(280,60%,60%)] flex items-center justify-center mb-4">
+                <Ticket className="h-8 w-8 text-white" />
               </div>
-              <CardTitle className="text-2xl">Create New Ticket</CardTitle>
-              <CardDescription>
-                Submit a new support ticket with all necessary details for faster resolution.
+              <CardTitle className="text-xl">Create Support Ticket</CardTitle>
+              <CardDescription className="text-base">
+                Submit a new complaint or request. Our system will automatically route it to the appropriate department.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button
+              <Button 
                 onClick={() => navigate("/create")}
-                className="w-full bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-opacity"
-                size="lg"
+                className="w-full bg-gradient-to-r from-secondary to-[hsl(280,60%,60%)] hover:opacity-90"
               >
-                Create Ticket
+                Get Started →
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-xl transition-all duration-300 border-info/20 hover:border-info/40 cursor-pointer">
-            <CardHeader className="pb-4">
-              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-info to-info/80 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Search className="h-6 w-6 text-info-foreground" />
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-info to-[hsl(210,85%,55%)] flex items-center justify-center mb-4">
+                <Search className="h-8 w-8 text-white" />
               </div>
-              <CardTitle className="text-2xl">Track Existing Ticket</CardTitle>
-              <CardDescription>
-                Check the status of your submitted tickets and view responses from staff.
+              <CardTitle className="text-xl">Access Existing Ticket</CardTitle>
+              <CardDescription className="text-base">
+                Check the status of your submitted tickets and view responses from our support team.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button
+              <Button 
                 onClick={() => navigate("/track")}
-                variant="outline"
-                className="w-full border-info hover:bg-info/10"
-                size="lg"
+                className="w-full bg-gradient-to-r from-info to-[hsl(210,85%,55%)] hover:opacity-90"
               >
-                Track Ticket
+                Track Now →
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-secondary to-[hsl(280,60%,60%)] flex items-center justify-center mb-4">
+                <UserCog className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-xl">Staff Support Login</CardTitle>
+              <CardDescription className="text-base">
+                Access the staff dashboard to manage and respond to student support tickets.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline"
+                className="w-full border-secondary text-secondary hover:bg-secondary/10"
+              >
+                Staff Login →
               </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Features Section */}
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-8">Why Use This System?</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {features.map((feature) => (
-              <Card key={feature.title} className="text-center border-muted">
-                <CardHeader>
-                  <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                    <feature.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
+        {/* How It Works Section */}
+        <div className="max-w-5xl mx-auto bg-card rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-8">How It Works</h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            {steps.map((step, index) => (
+              <div key={index} className="text-center">
+                <div className="h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                  {index + 1}
+                </div>
+                <p className="text-sm text-foreground">{step}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-card/50 backdrop-blur-sm mt-16">
-        <div className="container py-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 University Support Portal. All rights reserved.</p>
+      <footer className="bg-[hsl(220,15%,15%)] text-white mt-16">
+        <div className="container py-8 text-center">
+          <p className="font-medium mb-2">© 2025 Redeemers University Support Portal @ DICT. All rights reserved.</p>
+          <p className="text-sm text-white/70">For urgent matters, please contact the registrar's office directly.</p>
         </div>
       </footer>
     </div>
