@@ -119,19 +119,19 @@ const CreateTicket = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+    <div className="min-h-screen bg-background">
       <div className="container max-w-4xl py-8">
         <Button
           variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-6 hover:bg-primary/10"
+          className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Button>
 
-        <Card className="shadow-lg border-primary/10">
-          <CardHeader className="space-y-3 bg-gradient-to-r from-primary to-primary-glow text-primary-foreground rounded-t-lg">
+        <Card>
+          <CardHeader className="space-y-3 bg-primary text-primary-foreground rounded-t-lg">
             <CardTitle className="text-3xl font-bold">Create Support Ticket</CardTitle>
             <CardDescription className="text-primary-foreground/90">
               Please provide all necessary details for your complaint. All fields marked with * are required.
@@ -277,7 +277,7 @@ const CreateTicket = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-opacity"
+                    className="flex-1"
                   >
                     <Send className="mr-2 h-4 w-4" />
                     {isSubmitting ? "Submitting..." : "Submit Ticket"}

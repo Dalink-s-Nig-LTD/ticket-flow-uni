@@ -93,19 +93,19 @@ const TrackTicket = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+    <div className="min-h-screen bg-background">
       <div className="container max-w-4xl py-8">
         <Button
           variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-6 hover:bg-primary/10"
+          className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Button>
 
-        <Card className="shadow-lg border-primary/10 mb-6">
-          <CardHeader className="space-y-3 bg-gradient-to-r from-primary to-primary-glow text-primary-foreground rounded-t-lg">
+        <Card className="mb-6">
+          <CardHeader className="space-y-3 bg-primary text-primary-foreground rounded-t-lg">
             <CardTitle className="text-3xl font-bold">Track Your Ticket</CardTitle>
             <CardDescription className="text-primary-foreground/90">
               Enter your email address and ticket ID to check the status of your support ticket.
@@ -152,7 +152,7 @@ const TrackTicket = () => {
                 <Button
                   type="submit"
                   disabled={isSearching}
-                  className="w-full bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-opacity"
+                  className="w-full"
                 >
                   <Search className="mr-2 h-4 w-4" />
                   {isSearching ? "Searching..." : "Search Ticket"}
@@ -163,7 +163,7 @@ const TrackTicket = () => {
         </Card>
 
         {ticketData && (
-          <Card className="shadow-lg border-primary/10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <Card>
             <CardHeader className="bg-muted/50">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-2xl">Ticket Information</CardTitle>

@@ -28,16 +28,16 @@ const Confirmation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-success/5 to-background flex items-center justify-center p-4">
-      <Card className="max-w-2xl w-full shadow-xl border-success/20">
-        <CardHeader className="text-center space-y-4 bg-gradient-to-r from-success to-success/80 text-success-foreground rounded-t-lg pb-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Card className="max-w-2xl w-full">
+        <CardHeader className="text-center space-y-4 bg-success text-success-foreground rounded-t-lg pb-8">
           <div className="flex justify-center">
-            <div className="rounded-full bg-success-foreground/20 p-4">
-              <CheckCircle2 className="h-16 w-16 text-success-foreground" />
+            <div className="rounded-full bg-white/20 p-4">
+              <CheckCircle2 className="h-16 w-16 text-white" />
             </div>
           </div>
           <CardTitle className="text-3xl font-bold">Ticket Submitted Successfully!</CardTitle>
-          <CardDescription className="text-success-foreground/90 text-lg">
+          <CardDescription className="text-white/90 text-lg">
             Your support ticket has been created and routed to the appropriate department.
           </CardDescription>
         </CardHeader>
@@ -97,7 +97,6 @@ const Confirmation = () => {
             <Button
               onClick={() => navigate("/track")}
               variant="default"
-              className="bg-gradient-to-r from-primary to-primary-glow"
             >
               <Search className="mr-2 h-4 w-4" />
               Track Ticket

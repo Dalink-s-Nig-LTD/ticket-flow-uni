@@ -29,11 +29,10 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[hsl(245,60%,35%)] via-[hsl(230,60%,45%)] to-[hsl(220,70%,50%)] text-white py-20">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0wIDQwTDQwIDBaTTQwIDQwTDAgMFoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA1Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+')] opacity-30"></div>
-        <div className="container relative z-10 text-center">
+      <section className="bg-primary text-white py-20">
+        <div className="container text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Welcome to the Support Center</h2>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-95">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto">
             Create a ticket for your complaint so the university can monitor and respond effectively. Our dedicated team is here to help you.
           </p>
         </div>
@@ -42,9 +41,9 @@ const Index = () => {
       {/* Main Content Cards */}
       <section className="container py-12">
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card>
             <CardHeader>
-              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-secondary to-[hsl(280,60%,60%)] flex items-center justify-center mb-4">
+              <div className="h-16 w-16 rounded-xl bg-primary flex items-center justify-center mb-4">
                 <Ticket className="h-8 w-8 text-white" />
               </div>
               <CardTitle className="text-xl">Create Support Ticket</CardTitle>
@@ -55,16 +54,16 @@ const Index = () => {
             <CardContent>
               <Button 
                 onClick={() => navigate("/create")}
-                className="w-full bg-gradient-to-r from-secondary to-[hsl(280,60%,60%)] hover:opacity-90"
+                className="w-full"
               >
                 Get Started →
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card>
             <CardHeader>
-              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-info to-[hsl(210,85%,55%)] flex items-center justify-center mb-4">
+              <div className="h-16 w-16 rounded-xl bg-primary flex items-center justify-center mb-4">
                 <Search className="h-8 w-8 text-white" />
               </div>
               <CardTitle className="text-xl">Track Existing Ticket</CardTitle>
@@ -75,7 +74,7 @@ const Index = () => {
             <CardContent>
               <Button 
                 onClick={() => navigate("/track")}
-                className="w-full bg-gradient-to-r from-info to-[hsl(210,85%,55%)] hover:opacity-90"
+                className="w-full"
               >
                 Track Now →
               </Button>
@@ -100,10 +99,10 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[hsl(220,15%,15%)] text-white mt-16">
+      <footer className="bg-primary text-white mt-16">
         <div className="container py-8 text-center">
           <p className="font-medium mb-2">© 2025 Redeemers University Support Portal @ DICT. All rights reserved.</p>
-          <p className="text-sm text-white/70">For urgent matters, please contact the registrar's office directly.</p>
+          <p className="text-sm">For urgent matters, please contact the registrar's office directly.</p>
         </div>
       </footer>
     </div>
