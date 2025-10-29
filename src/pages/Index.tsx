@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Ticket, Search, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import ruLogo from "@/assets/ru-logo.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,17 +18,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
-        <div className="container flex h-20 items-center justify-between">
+        <div className="container flex h-24 items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-                RU
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-primary leading-tight">REDEEMER'S<br/>UNIVERSITY</h1>
-                <p className="text-xs text-muted-foreground italic">...running with the vision</p>
-              </div>
-            </div>
+            <img src={ruLogo} alt="Redeemer's University Logo" className="h-20" />
           </div>
           <div className="text-right">
             <h2 className="text-2xl font-bold text-primary">Student Support Portal</h2>
