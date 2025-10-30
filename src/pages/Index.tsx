@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { useIsMobile } from "@/hooks/use-mobile";
 import Autoplay from "embla-carousel-autoplay";
 import ruLogo from "@/assets/ru-logo.png";
+import heroBg from "@/assets/hero-bg.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,8 +34,12 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-primary text-white py-12 md:py-16">
-        <div className="container text-center px-4">
+      <section 
+        className="relative text-white py-12 md:py-16 bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroBg})` }}
+      >
+        <div className="absolute inset-0 bg-primary/60" />
+        <div className="container text-center px-4 relative z-10">
           <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Welcome to the Support Center</h2>
           <p className="text-base md:text-lg max-w-3xl mx-auto">
             Create a ticket for your complaint so the university can monitor and respond effectively. Our dedicated team is here to help you.
