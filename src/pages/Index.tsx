@@ -6,7 +6,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { useIsMobile } from "@/hooks/use-mobile";
 import Autoplay from "embla-carousel-autoplay";
 import ruLogo from "@/assets/ru-logo.png";
-import heroBg from "@/assets/hero-bg.png";
+import campus1 from "@/assets/campus-1.jpg";
+import campus2 from "@/assets/campus-2.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -34,11 +35,41 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section 
-        className="relative text-white py-12 md:py-16 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBg})` }}
-      >
-        <div className="absolute inset-0 bg-primary/30" />
+      <section className="relative text-white py-12 md:py-16 overflow-hidden">
+        <Carousel 
+          className="absolute inset-0"
+          plugins={[
+            Autoplay({
+              delay: 4000,
+            }),
+          ]}
+          opts={{
+            loop: true,
+          }}
+        >
+          <CarouselContent>
+            <CarouselItem>
+              <div 
+                className="h-full w-full bg-cover bg-center"
+                style={{ 
+                  backgroundImage: `url(${campus1})`,
+                  height: '100%',
+                  minHeight: '300px'
+                }}
+              />
+            </CarouselItem>
+            <CarouselItem>
+              <div 
+                className="h-full w-full bg-cover bg-center"
+                style={{ 
+                  backgroundImage: `url(${campus2})`,
+                  height: '100%',
+                  minHeight: '300px'
+                }}
+              />
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
         <div className="container text-center px-4 relative z-10">
           <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Welcome to the Support Center</h2>
           <p className="text-base md:text-lg max-w-3xl mx-auto">
