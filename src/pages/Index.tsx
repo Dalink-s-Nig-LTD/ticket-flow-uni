@@ -38,7 +38,7 @@ const Index = () => {
         className="relative text-white py-12 md:py-16 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
-        <div className="absolute inset-0 bg-primary/60" />
+        <div className="absolute inset-0 bg-primary/30" />
         <div className="container text-center px-4 relative z-10">
           <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Welcome to the Support Center</h2>
           <p className="text-base md:text-lg max-w-3xl mx-auto">
