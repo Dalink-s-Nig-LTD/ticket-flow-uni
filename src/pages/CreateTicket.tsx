@@ -39,7 +39,7 @@ const formSchema = z.object({
     .min(5, "Matric number is required")
     .regex(
       /^RUN\/[A-Z]+\/\d{2}\/\d{4}$/,
-      "Invalid matric number format (e.g., RUN/MCM/23/1234)"
+      "Invalid matric number format (e.g., RUN/MCM/23/12345)"
     )
     .max(50),
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -78,7 +78,7 @@ const CreateTicket = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<string>("");
-  
+
   const createTicket = useMutation(api.tickets.createTicket);
   const sendEmail = useAction(api.emails.sendTicketEmail);
   // @ts-expect-error - Convex API regenerating
@@ -116,9 +116,19 @@ const CreateTicket = () => {
         return;
       }
       // Validate file type
-      const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "image/webp",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
       if (!allowedTypes.includes(file.type)) {
-        toast.error("Only images (JPG, PNG, WEBP), PDF, and Word documents are allowed");
+        toast.error(
+          "Only images (JPG, PNG, WEBP), PDF, and Word documents are allowed"
+        );
         return;
       }
       setSelectedFile(file);
@@ -141,10 +151,10 @@ const CreateTicket = () => {
       if (selectedFile) {
         try {
           setUploadProgress("Uploading file...");
-          
+
           // Get upload URL from Convex
           const uploadUrl = await generateUploadUrl();
-          
+
           // Upload file to Convex storage
           const uploadResult = await fetch(uploadUrl, {
             method: "POST",
@@ -157,13 +167,15 @@ const CreateTicket = () => {
           }
 
           const { storageId } = await uploadResult.json();
-          
+
           // Get the file URL
           attachmentUrl = await getFileUrl({ storageId });
           setUploadProgress("File uploaded successfully");
         } catch (uploadError) {
           console.error("File upload error:", uploadError);
-          toast.error("Failed to upload file. Ticket will be created without attachment.");
+          toast.error(
+            "Failed to upload file. Ticket will be created without attachment."
+          );
         }
       }
 
@@ -407,7 +419,9 @@ const CreateTicket = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => document.getElementById('file-upload')?.click()}
+                        onClick={() =>
+                          document.getElementById("file-upload")?.click()
+                        }
                         disabled={isSubmitting}
                         className="w-full sm:w-auto"
                       >
@@ -424,7 +438,9 @@ const CreateTicket = () => {
                       {selectedFile && (
                         <div className="flex-1 flex items-center gap-2 bg-muted px-3 py-2 rounded-md">
                           <Paperclip className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm truncate flex-1">{selectedFile.name}</span>
+                          <span className="text-sm truncate flex-1">
+                            {selectedFile.name}
+                          </span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -438,10 +454,13 @@ const CreateTicket = () => {
                       )}
                     </div>
                     {uploadProgress && (
-                      <p className="text-xs text-muted-foreground">{uploadProgress}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {uploadProgress}
+                      </p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      Accepted: Images (JPG, PNG, WEBP), PDF, Word documents. Max 10MB.
+                      Accepted: Images (JPG, PNG, WEBP), PDF, Word documents.
+                      Max 10MB.
                     </p>
                   </div>
                 </div>
