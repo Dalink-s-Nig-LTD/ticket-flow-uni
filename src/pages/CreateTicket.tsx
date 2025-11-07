@@ -100,12 +100,6 @@ const CreateTicket = () => {
     },
   });
 
-  const generateTicketId = () => {
-    const date = new Date();
-    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return `UNIU-${dateStr}-${randomNum}`;
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
