@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ArrowLeft, Send, Paperclip, X } from "lucide-react";
+import { ArrowLeft, Send, Paperclip, X, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,11 +40,14 @@ const natureOptions = [
   "Others",
 ];
 
+const FORM_STORAGE_KEY = "prospectiveTicket_draft";
+
 const ProspectiveStudentTicket = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [lastSaved, setLastSaved] = useState<string>("");
   
   const createTicket = useMutation(api.tickets.createTicket);
   const sendEmail = useAction(api.emails.sendTicketEmail);
@@ -67,12 +70,40 @@ const ProspectiveStudentTicket = () => {
     },
   });
 
-  const generateTicketId = () => {
-    const date = new Date();
-    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return `UNIU-${dateStr}-${randomNum}`;
-  };
+  // Load saved form data on mount
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem(FORM_STORAGE_KEY);
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        form.reset(parsed);
+        setLastSaved("Draft loaded");
+        setTimeout(() => setLastSaved(""), 2000);
+      }
+    } catch (error) {
+      console.error("Failed to load saved form data:", error);
+    }
+  }, [form]);
+
+  // Auto-save form data
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      try {
+        // Only save if at least one field has content
+        const hasContent = Object.values(values).some(
+          (value) => value && value.toString().trim().length > 0
+        );
+        if (hasContent) {
+          localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(values));
+          setLastSaved("Saved");
+          setTimeout(() => setLastSaved(""), 1500);
+        }
+      } catch (error) {
+        console.error("Failed to save form data:", error);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -95,6 +126,14 @@ const ProspectiveStudentTicket = () => {
   const removeFile = () => {
     setSelectedFile(null);
     setUploadProgress("");
+  };
+
+  // Fallback client-side ticket ID for backends expecting it in args
+  const generateTicketId = () => {
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `UNIU-${dateStr}-${randomNum}`;
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -134,8 +173,10 @@ const ProspectiveStudentTicket = () => {
         }
       }
 
-      // Create ticket in Convex (ticket ID generated server-side)
+      // Create ticket in Convex (handles both server- and client-generated IDs)
+      const clientTicketId = generateTicketId();
       const result = await createTicket({
+        ticket_id: clientTicketId,
         jamb_number: values.jambNumber,
         name: values.name,
         email: values.email,
@@ -144,10 +185,11 @@ const ProspectiveStudentTicket = () => {
         nature_of_complaint: values.natureOfComplaint,
         subject: values.subject,
         message: values.message,
+        status: "Pending",
         attachment_url: attachmentUrl,
-      });
+      } as any);
 
-      const ticketId = result.ticket_id;
+      const ticketId = (result as any)?.ticket_id || clientTicketId;
 
       // Send email notification
       try {
@@ -168,6 +210,9 @@ const ProspectiveStudentTicket = () => {
         toast.warning("Ticket created but email notification may have failed");
       }
 
+      // Clear saved draft after successful submission
+      localStorage.removeItem(FORM_STORAGE_KEY);
+      
       toast.success("Ticket submitted successfully!");
       navigate("/confirmation", { state: { ticketData: { ticket_id: ticketId, ...values } } });
     } catch (error) {
@@ -192,10 +237,20 @@ const ProspectiveStudentTicket = () => {
 
         <Card>
           <CardHeader className="space-y-2 md:space-y-3 bg-primary text-primary-foreground rounded-t-lg p-4 md:p-6">
-            <CardTitle className="text-xl md:text-3xl font-bold">Create Support Ticket - Prospective Student</CardTitle>
-            <CardDescription className="text-primary-foreground/90 text-sm md:text-base">
-              Use your JAMB number and regular email address. All fields marked with * are required.
-            </CardDescription>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <CardTitle className="text-xl md:text-3xl font-bold">Create Support Ticket - Prospective Student</CardTitle>
+                <CardDescription className="text-primary-foreground/90 text-sm md:text-base mt-2">
+                  Use your JAMB number and regular email address. All fields marked with * are required.
+                </CardDescription>
+              </div>
+              {lastSaved && (
+                <div className="flex items-center gap-1.5 text-xs bg-primary-foreground/20 text-primary-foreground px-3 py-1.5 rounded-full animate-in fade-in duration-300">
+                  <Save className="h-3 w-3" />
+                  <span>{lastSaved}</span>
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="pt-4 md:pt-6 p-4 md:p-6">
             <Form {...form}>

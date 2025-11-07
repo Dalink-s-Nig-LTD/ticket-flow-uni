@@ -13,7 +13,7 @@ export default defineSchema({
     nature_of_complaint: v.string(),
     subject: v.string(),
     message: v.string(),
-    status: v.string(),
+    status: v.optional(v.string()),
     staff_response: v.optional(v.string()),
     attachment_url: v.optional(v.string()),
   })
