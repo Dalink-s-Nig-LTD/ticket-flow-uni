@@ -38,7 +38,7 @@ const formSchema = z.object({
     .string()
     .min(5, "Matric number is required")
     .regex(
-      /^RUN\/[A-Z]+\/\d{2}\/\d{4}$/,
+      /^RUN\/[A-Z]+\/\d{2}\/\d{5}$/,
       "Invalid matric number format (e.g., RUN/STA/23/12345)"
     )
     .max(50),
