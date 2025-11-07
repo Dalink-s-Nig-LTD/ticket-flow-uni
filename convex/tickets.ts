@@ -141,7 +141,7 @@ export const createTicket = mutation({
     // Generate secure server-side ticket ID
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const randomBytes = crypto.getRandomValues(new Uint8Array(3));
+    const randomBytes = globalThis.crypto.getRandomValues(new Uint8Array(3));
     const randomNum = (randomBytes[0] << 16 | randomBytes[1] << 8 | randomBytes[2]) % 10000;
     const ticketId = `UNIU-${dateStr}-${String(randomNum).padStart(4, '0')}`;
     

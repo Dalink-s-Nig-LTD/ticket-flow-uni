@@ -102,8 +102,8 @@ export const requestPasswordReset = mutation({
     }
 
     // Generate secure random token
-    const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
+    const token = Array.from(globalThis.crypto.getRandomValues(new Uint8Array(32)))
+      .map((b: number) => b.toString(16).padStart(2, '0'))
       .join('');
 
     // Token expires in 1 hour
