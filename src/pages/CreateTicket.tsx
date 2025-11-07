@@ -262,7 +262,7 @@ const CreateTicket = () => {
                         <FormLabel>RUN Matric Number *</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="e.g., RUN/MCM/23/12345"
+                            placeholder="e.g., RUN/STA/23/12345"
                             {...field}
                           />
                         </FormControl>
