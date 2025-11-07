@@ -172,6 +172,14 @@ const CreateTicket = () => {
     setUploadProgress("");
   };
 
+  // Fallback client-side ticket ID for backends expecting it in args
+  const generateTicketId = () => {
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `UNIU-${dateStr}-${randomNum}`;
+  };
+
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
@@ -211,8 +219,10 @@ const CreateTicket = () => {
         }
       }
 
-      // Create ticket in Convex (ticket ID generated server-side)
+      // Create ticket in Convex (handles both server- and client-generated IDs)
+      const clientTicketId = generateTicketId();
       const result = await createTicket({
+        ticket_id: clientTicketId,
         matric_number: values.matricNumber,
         name: values.name,
         email: values.email,
@@ -221,10 +231,11 @@ const CreateTicket = () => {
         nature_of_complaint: values.natureOfComplaint,
         subject: values.subject,
         message: values.message,
+        status: "Pending",
         attachment_url: attachmentUrl,
-      });
+      } as any);
 
-      const ticketId = result.ticket_id;
+      const ticketId = (result as any)?.ticket_id || clientTicketId;
 
       // Send email notification
       try {
