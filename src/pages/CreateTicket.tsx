@@ -175,6 +175,16 @@ const CreateTicket = () => {
     setUploadProgress("");
   };
 
+  const generateTicketId = () => {
+    const ts = new Date();
+    const pad = (n: number) => `${n}`.padStart(2, "0");
+    const y = ts.getFullYear();
+    const m = pad(ts.getMonth() + 1);
+    const d = pad(ts.getDate());
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `TCK-${y}${m}${d}-${rand}`;
+  };
+
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
@@ -215,7 +225,10 @@ const CreateTicket = () => {
       }
 
       // Create ticket in Convex
+      const clientTicketId = generateTicketId();
       const result = await createTicket({
+        ticket_id: clientTicketId,
+        status: "Pending",
         matric_number: values.matricNumber,
         name: values.name,
         email: values.email,
@@ -227,7 +240,7 @@ const CreateTicket = () => {
         attachment_url: attachmentUrl,
       });
 
-      const ticketId = (result as CreateTicketResponse).ticket_id;
+      const ticketId = (result as CreateTicketResponse)?.ticket_id || clientTicketId;
 
       // Send email notification
       try {
