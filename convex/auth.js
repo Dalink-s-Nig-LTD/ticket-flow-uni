@@ -1,6 +1,8 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
+import { isAuthorizedAdmin } from "./departments";
 export const signUp = mutation({
     args: {
         email: v.string(),
@@ -32,12 +34,30 @@ export const signUp = mutation({
         if (existing) {
             throw new Error("User already exists");
         }
+        // Check if email is authorized as admin
+        if (!isAuthorizedAdmin(email)) {
+            throw new Error("This email is not authorized as an admin. Please contact IT support.");
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = await ctx.db.insert("users", {
             email,
             password: hashedPassword,
             created_at: Date.now(),
         });
+        
+        // Assign role to the new user
+        try {
+            await ctx.scheduler.runAfter(0, internal.roles.assignRole, {
+                userId,
+                email,
+            });
+        } catch (roleError) {
+            // If role assignment fails, delete the user
+            await ctx.db.delete(userId);
+            throw new Error("Failed to assign admin role. Please try again.");
+        }
+        
         return { userId, email };
     },
 });

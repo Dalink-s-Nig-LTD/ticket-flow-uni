@@ -1,6 +1,8 @@
 import { v, ConvexError } from "convex/values";
 import { query, mutation, action } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { getUserDepartments } from "./roles";
+
 // Helper function to verify admin session
 async function verifyAdminSession(ctx, sessionId) {
     if (!sessionId) {
@@ -15,7 +17,9 @@ async function verifyAdminSession(ctx, sessionId) {
     }
     return session;
 }
+
 // PUBLIC: Get all tickets (ADMIN ONLY - requires authentication)
+// Filters by department access for department admins
 export const getAllTickets = query({
     args: { sessionId: v.optional(v.id("sessions")) },
     handler: async (ctx, { sessionId }) => {
@@ -23,10 +27,29 @@ export const getAllTickets = query({
             throw new Error("Unauthorized: Authentication required");
         }
         await verifyAdminSession(ctx, sessionId);
-        return await ctx.db.query("tickets").order("desc").collect();
+        
+        // Get admin's department access
+        const { isSuperAdmin, departments } = await getUserDepartments(ctx, sessionId);
+        
+        // Super admin sees all tickets
+        if (isSuperAdmin) {
+            return await ctx.db.query("tickets").order("desc").collect();
+        }
+        
+        // Department admin sees only their departments' tickets
+        if (!departments || departments.length === 0) {
+            throw new Error("No departments assigned to your account");
+        }
+        
+        const allTickets = await ctx.db.query("tickets").order("desc").collect();
+        return allTickets.filter(ticket => 
+            departments.includes(ticket.nature_of_complaint)
+        );
     },
 });
+
 // PUBLIC: Get ticket by ID (ADMIN ONLY - requires authentication)
+// Checks department access for department admins
 export const getTicketById = query({
     args: {
         ticketId: v.string(),
@@ -37,10 +60,26 @@ export const getTicketById = query({
             throw new Error("Unauthorized: Authentication required");
         }
         await verifyAdminSession(ctx, sessionId);
-        return await ctx.db
+        
+        const ticket = await ctx.db
             .query("tickets")
             .withIndex("by_ticket_id", (q) => q.eq("ticket_id", ticketId))
             .first();
+        
+        if (!ticket) {
+            throw new Error("Ticket not found");
+        }
+        
+        // Check department access
+        const { isSuperAdmin, departments } = await getUserDepartments(ctx, sessionId);
+        
+        if (!isSuperAdmin) {
+            if (!departments || !departments.includes(ticket.nature_of_complaint)) {
+                throw new Error("You don't have access to this ticket's department");
+            }
+        }
+        
+        return ticket;
     },
 });
 // PUBLIC: Track ticket (requires email + ticket ID match)

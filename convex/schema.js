@@ -37,4 +37,12 @@ export default defineSchema({
     })
         .index("by_token", ["token"])
         .index("by_user_id", ["user_id"]),
+    user_roles: defineTable({
+        user_id: v.id("users"),
+        role: v.string(), // "super_admin" or "department_admin"
+        department: v.optional(v.string()), // null for super_admin, specific department for department_admin
+        assigned_at: v.number(),
+    })
+        .index("by_user_id", ["user_id"])
+        .index("by_department", ["department"]),
 });

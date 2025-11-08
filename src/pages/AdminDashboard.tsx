@@ -44,6 +44,11 @@ const AdminDashboard = () => {
     api.tickets.getAllTickets, 
     sessionId ? { sessionId: sessionId as any } : "skip"
   ) || [];
+  
+  const userRole = useQuery(
+    api.auth_queries.getCurrentUserRole,
+    sessionId ? { sessionId: sessionId as any } : "skip"
+  );
 
   // Filter and sort tickets
   const filteredAndSortedTickets = useMemo(() => {
@@ -169,7 +174,13 @@ const AdminDashboard = () => {
             <img src={ruLogo} alt="Redeemer's University Logo" className="h-8 md:h-12 flex-shrink-0" />
             <div className="min-w-0">
               <h1 className="text-sm md:text-lg font-bold truncate">Admin Dashboard</h1>
-              <p className="text-xs md:text-sm text-muted-foreground truncate">{userEmail}</p>
+              {userRole && (
+                <p className="text-xs md:text-sm text-muted-foreground truncate">
+                  {userRole.role === "super_admin" 
+                    ? "Super Admin - All Departments" 
+                    : `${userRole.departments?.join(", ") || "No departments"}`}
+                </p>
+              )}
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={handleSignOut} className="flex-shrink-0">
