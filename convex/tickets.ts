@@ -127,7 +127,7 @@ export const createTicket = mutation({
 
     // Validate matric number format if provided
     if (args.matric_number) {
-      const matricRegex = /^RUN\/[A-Z]+\/\d{2}\/\d{4}$/;
+      const matricRegex = /^RUN\/[A-Z]+\/\d{2}\/\d{4,5}$/;
       if (!matricRegex.test(args.matric_number)) {
         throw new Error("Invalid matric number format");
       }
@@ -141,8 +141,13 @@ export const createTicket = mutation({
     // Generate secure server-side ticket ID
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const randomBytes = globalThis.crypto.getRandomValues(new Uint8Array(3));
-    const randomNum = (randomBytes[0] << 16 | randomBytes[1] << 8 | randomBytes[2]) % 10000;
+    let randomNum = Math.floor(Math.random() * 10000);
+    try {
+      const bytes = globalThis.crypto?.getRandomValues?.(new Uint8Array(2));
+      if (bytes) {
+        randomNum = ((bytes[0] << 8) | bytes[1]) % 10000;
+      }
+    } catch {}
     const ticketId = `UNIU-${dateStr}-${String(randomNum).padStart(4, '0')}`;
     
     const newTicketId = await ctx.db.insert("tickets", {

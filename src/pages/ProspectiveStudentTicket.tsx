@@ -171,10 +171,8 @@ const ProspectiveStudentTicket = () => {
         }
       }
 
-      // Create ticket in Convex (handles both server- and client-generated IDs)
-      const clientTicketId = generateTicketId();
+      // Create ticket in Convex
       const result = await createTicket({
-        ticket_id: clientTicketId,
         jamb_number: values.jambNumber,
         name: values.name,
         email: values.email,
@@ -183,11 +181,10 @@ const ProspectiveStudentTicket = () => {
         nature_of_complaint: values.natureOfComplaint,
         subject: values.subject,
         message: values.message,
-        status: "Pending",
         attachment_url: attachmentUrl,
-      } as any);
+      });
 
-      const ticketId = (result as any)?.ticket_id || clientTicketId;
+      const ticketId = (result as any)?.ticket_id;
 
       // Send email notification
       try {
@@ -213,9 +210,10 @@ const ProspectiveStudentTicket = () => {
       
       toast.success("Ticket submitted successfully!");
       navigate("/confirmation", { state: { ticketData: { ticket_id: ticketId, ...values } } });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting ticket:", error);
-      toast.error("Failed to submit ticket. Please try again.");
+      const message = error?.data?.message || error?.message || "Failed to submit ticket. Please try again.";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
