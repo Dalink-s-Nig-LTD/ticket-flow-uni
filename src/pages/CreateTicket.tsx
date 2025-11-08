@@ -181,6 +181,7 @@ const CreateTicket = () => {
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
+      const clientTicketId = generateTicketId();
       const now = new Date().toISOString();
 
       let attachmentUrl: string | undefined;
@@ -219,6 +220,7 @@ const CreateTicket = () => {
 
       // Create ticket in Convex
       const result = await createTicket({
+        ticket_id: clientTicketId,
         matric_number: values.matricNumber,
         name: values.name,
         email: values.email,
@@ -228,9 +230,9 @@ const CreateTicket = () => {
         subject: values.subject,
         message: values.message,
         attachment_url: attachmentUrl,
-      });
+      } as any);
 
-      const ticketId = (result as any)?.ticket_id;
+      const ticketId = (result as any)?.ticket_id ?? clientTicketId;
 
       // Send email notification
       try {
