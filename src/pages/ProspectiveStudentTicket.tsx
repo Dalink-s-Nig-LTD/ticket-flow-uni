@@ -132,32 +132,18 @@ const ProspectiveStudentTicket = () => {
     setUploadProgress("");
   };
 
-  const generateTicketId = () => {
-    const ts = new Date();
-    const pad = (n: number) => `${n}`.padStart(2, "0");
-    const y = ts.getFullYear();
-    const m = pad(ts.getMonth() + 1);
-    const d = pad(ts.getDate());
-    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-    return `TCK-${y}${m}${d}-${rand}`;
-  };
-
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
       const now = new Date().toISOString();
-
       let attachmentUrl: string | undefined;
 
-      // Upload file if selected
+      // Handle file upload if present
       if (selectedFile) {
         try {
           setUploadProgress("Uploading file...");
-          
-          // Get upload URL from Convex
           const uploadUrl = await generateUploadUrl();
           
-          // Upload file to Convex storage
           const uploadResult = await fetch(uploadUrl, {
             method: "POST",
             headers: { "Content-Type": selectedFile.type },
@@ -169,21 +155,17 @@ const ProspectiveStudentTicket = () => {
           }
 
           const { storageId } = await uploadResult.json();
-          
-          // Get the file URL
           attachmentUrl = await getFileUrl({ storageId });
           setUploadProgress("File uploaded successfully");
         } catch (uploadError) {
           console.error("File upload error:", uploadError);
-          toast.error("Failed to upload file. Ticket will be created without attachment.");
+          toast.error("File upload failed. Submitting ticket without attachment.");
+          setUploadProgress("");
         }
       }
 
       // Create ticket in Convex
-      const clientTicketId = generateTicketId();
       const result = await createTicket({
-        ticket_id: clientTicketId,
-        status: "Pending",
         jamb_number: values.jambNumber,
         name: values.name,
         email: values.email,
@@ -195,7 +177,7 @@ const ProspectiveStudentTicket = () => {
         attachment_url: attachmentUrl,
       });
 
-      const ticketId = (result as CreateTicketResponse)?.ticket_id || clientTicketId;
+      const ticketId = (result as CreateTicketResponse).ticket_id;
 
       // Send email notification
       try {
