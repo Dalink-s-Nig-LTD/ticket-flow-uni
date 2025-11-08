@@ -103,7 +103,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: args.email }],
           subject: `Ticket Confirmation - ${args.ticketId}`,
           htmlContent: studentEmailHtml,
@@ -189,7 +189,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: staffEmail }],
           subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
           htmlContent: staffEmailHtml,
@@ -278,7 +278,7 @@ export const sendPasswordResetEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: email }],
           subject: "Password Reset Request - RUN Admin Portal",
           htmlContent: emailHtml,
