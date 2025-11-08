@@ -142,7 +142,6 @@ const CreateTicket = () => {
     return () => subscription.unsubscribe();
   }, [form]);
 
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -251,17 +250,39 @@ const CreateTicket = () => {
 
       // Clear saved draft after successful submission
       localStorage.removeItem(FORM_STORAGE_KEY);
-      
+
       toast.success("Ticket submitted successfully!");
       navigate("/confirmation", {
         state: { ticketData: { ticket_id: ticketId, ...values } },
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error submitting ticket:", error);
-      const message = 
-        typeof error?.data === "string"
-          ? error.data
-          : error?.data?.message || error?.message || "Failed to submit ticket. Please try again.";
+      let message = "Failed to submit ticket. Please try again.";
+
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === "object" && error !== null) {
+        const errObj = error as Record<string, unknown>;
+        if (typeof errObj.data === "string") {
+          message = errObj.data;
+        } else if (typeof errObj.data === "object" && errObj.data !== null) {
+          const dataObj = errObj.data as Record<string, unknown>;
+          if (typeof dataObj.message === "string") {
+            message = dataObj.message;
+          }
+        } else if (typeof errObj.message === "string") {
+          message = errObj.message;
+        } else {
+          try {
+            message = JSON.stringify(errObj);
+          } catch (_) {
+            /* ignore stringify errors */
+          }
+        }
+      } else {
+        message = String(error);
+      }
+
       toast.error(message);
     } finally {
       setIsSubmitting(false);
