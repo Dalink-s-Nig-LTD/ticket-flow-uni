@@ -1,9 +1,9 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
 import { isAuthorizedAdmin } from "./departments";
-export const signUp = mutation({
+export const signUp = action({
     args: {
         email: v.string(),
         password: v.string(),
@@ -27,10 +27,7 @@ export const signUp = mutation({
         if (!/[0-9]/.test(password)) {
             throw new Error("Password must contain at least one number");
         }
-        const existing = await ctx.db
-            .query("users")
-            .withIndex("by_email", (q) => q.eq("email", email))
-            .first();
+        const existing = await ctx.runQuery(internal.auth_queries.getUserByEmail, { email });
         if (existing) {
             throw new Error("User already exists");
         }
@@ -40,38 +37,34 @@ export const signUp = mutation({
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userId = await ctx.db.insert("users", {
+        const userId = await ctx.runMutation(internal.auth_queries.createUser, {
             email,
             password: hashedPassword,
-            created_at: Date.now(),
         });
         
         // Assign role to the new user
         try {
-            await ctx.scheduler.runAfter(0, internal.roles.assignRole, {
+            await ctx.runMutation(internal.roles.assignRole, {
                 userId,
                 email,
             });
         } catch (roleError) {
             // If role assignment fails, delete the user
-            await ctx.db.delete(userId);
+            await ctx.runMutation(internal.auth_queries.deleteUser, { userId });
             throw new Error("Failed to assign admin role. Please try again.");
         }
         
         return { userId, email };
     },
 });
-export const signIn = mutation({
+export const signIn = action({
     args: {
         email: v.string(),
         password: v.string(),
     },
     handler: async (ctx, { email, password }) => {
         // Use constant-time comparison to prevent timing attacks
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_email", (q) => q.eq("email", email))
-            .first();
+        const user = await ctx.runQuery(internal.auth_queries.getUserByEmail, { email });
         // Always check password even if user doesn't exist (prevent timing attack)
         const dummyHash = "$2a$10$abcdefghijklmnopqrstuv1234567890123456789012";
         const passwordToCheck = user?.password || dummyHash;
@@ -80,11 +73,9 @@ export const signIn = mutation({
             throw new Error("Invalid credentials");
         }
         // Create a session
-        const sessionId = await ctx.db.insert("sessions", {
+        const sessionId = await ctx.runMutation(internal.auth_queries.createSession, {
             userId: user._id,
             email: user.email,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         });
         return { userId: user._id, email: user.email, sessionId };
     },
@@ -143,7 +134,7 @@ export const verifyResetToken = query({
         return { valid: true };
     },
 });
-export const resetPassword = mutation({
+export const resetPassword = action({
     args: {
         token: v.string(),
         newPassword: v.string(),
@@ -162,10 +153,7 @@ export const resetPassword = mutation({
         if (!/[0-9]/.test(newPassword)) {
             throw new Error("Password must contain at least one number");
         }
-        const resetToken = await ctx.db
-            .query("password_reset_tokens")
-            .withIndex("by_token", (q) => q.eq("token", token))
-            .first();
+        const resetToken = await ctx.runQuery(internal.auth_queries.getResetToken, { token });
         if (!resetToken) {
             throw new Error("Invalid token");
         }
@@ -177,13 +165,11 @@ export const resetPassword = mutation({
         }
         // Hash new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        // Update user password
-        await ctx.db.patch(resetToken.user_id, {
-            password: hashedPassword,
-        });
-        // Mark token as used
-        await ctx.db.patch(resetToken._id, {
-            used: true,
+        // Update user password and mark token as used
+        await ctx.runMutation(internal.auth_queries.updatePassword, {
+            userId: resetToken.user_id,
+            tokenId: resetToken._id,
+            hashedPassword,
         });
         return { success: true };
     },
