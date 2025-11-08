@@ -9,6 +9,9 @@ import {
   User,
   FileText,
   AlertCircle,
+  Image as ImageIcon,
+  File,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,8 +52,32 @@ interface Ticket {
   message: string;
   status: string;
   staff_response?: string | null;
+  attachment_url?: string | null;
   _creationTime: number;
 }
+
+const getFileInfo = (url: string) => {
+  const fileName = url.split('/').pop() || 'attachment';
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  
+  let icon = File;
+  let fileType = 'Document';
+  let canPreview = false;
+  
+  if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension || '')) {
+    icon = ImageIcon;
+    fileType = 'Image';
+    canPreview = true;
+  } else if (extension === 'pdf') {
+    icon = FileText;
+    fileType = 'PDF Document';
+  } else if (['doc', 'docx'].includes(extension || '')) {
+    icon = FileText;
+    fileType = 'Word Document';
+  }
+  
+  return { fileName, extension, icon, fileType, canPreview };
+};
 
 const TicketDetail = () => {
   const { ticketId } = useParams<{ ticketId: string }>();
@@ -278,6 +305,65 @@ const TicketDetail = () => {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Attachments Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Attachments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {ticket.attachment_url ? (
+                  <div className="space-y-3">
+                    {(() => {
+                      const fileInfo = getFileInfo(ticket.attachment_url);
+                      const FileIcon = fileInfo.icon;
+                      
+                      return (
+                        <div className="border rounded-lg p-4 bg-muted/30">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-primary/10 rounded-md">
+                              <FileIcon className="h-6 w-6 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">
+                                {fileInfo.fileName}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {fileInfo.fileType}
+                              </p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(ticket.attachment_url, '_blank')}
+                              className="shrink-0"
+                            >
+                              <Download className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                          </div>
+                          
+                          {fileInfo.canPreview && (
+                            <div className="mt-3 pt-3 border-t">
+                              <img
+                                src={ticket.attachment_url}
+                                alt="Attachment preview"
+                                className="w-full h-48 object-cover rounded-md cursor-pointer hover:opacity-90 transition-opacity"
+                                onClick={() => window.open(ticket.attachment_url, '_blank')}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No attachments
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>
