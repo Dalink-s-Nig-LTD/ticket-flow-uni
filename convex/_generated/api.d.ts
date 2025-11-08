@@ -10,6 +10,7 @@
 
 import type * as auth from "../auth.js";
 import type * as emails from "../emails.js";
+import type * as files from "../files.js";
 import type * as tickets from "../tickets.js";
 
 import type {
@@ -29,6 +30,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   emails: typeof emails;
+  files: typeof files;
   tickets: typeof tickets;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

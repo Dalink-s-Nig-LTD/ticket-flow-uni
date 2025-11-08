@@ -84,10 +84,8 @@ const CreateTicket = () => {
 
   const createTicket = useMutation(api.tickets.createTicket);
   const sendEmail = useAction(api.emails.sendTicketEmail);
-  // @ts-expect-error - Convex API regenerating
-  const generateUploadUrl = useMutation(api.files?.generateUploadUrl);
-  // @ts-expect-error - Convex API regenerating
-  const getFileUrl = useMutation(api.files?.getFileUrl);
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const getFileUrl = useMutation(api.files.getFileUrl);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
