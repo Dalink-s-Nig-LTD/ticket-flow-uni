@@ -32,6 +32,12 @@ import {
 import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
+import { Id } from "../../convex/_generated/dataModel";
+
+type CreateTicketResponse = {
+  ticketId: Id<"tickets">;
+  ticket_id: string;
+};
 
 const formSchema = z.object({
   matricNumber: z
@@ -222,7 +228,7 @@ const CreateTicket = () => {
         attachment_url: attachmentUrl,
       });
 
-      const ticketId = (result as any)?.ticket_id;
+      const ticketId = (result as CreateTicketResponse).ticket_id;
 
       // Send email notification
       try {
