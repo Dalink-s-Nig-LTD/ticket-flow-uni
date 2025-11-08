@@ -57,7 +57,11 @@ const Confirmation = () => {
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                 <span className="text-muted-foreground">Matric Number:</span>
-                <span className="font-medium">{ticketData.matric_number}</span>
+                <span className="font-medium">{ticketData.matric_number || "N/A"}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                <span className="text-muted-foreground">JAMB Number:</span>
+                <span className="font-medium">{ticketData.jamb_number || "N/A"}</span>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                 <span className="text-muted-foreground">Department:</span>

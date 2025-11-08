@@ -253,7 +253,19 @@ const CreateTicket = () => {
 
       toast.success("Ticket submitted successfully!");
       navigate("/confirmation", {
-        state: { ticketData: { ticket_id: ticketId, ...values } },
+        state: { 
+          ticketData: { 
+            ticket_id: ticketId,
+            name: values.name,
+            matric_number: values.matricNumber,
+            email: values.email,
+            department: values.department,
+            nature_of_complaint: values.natureOfComplaint,
+            subject: values.subject,
+            status: "Pending",
+            created_at: new Date().toISOString(),
+          } 
+        },
       });
     } catch (error: unknown) {
       console.error("Error submitting ticket:", error);

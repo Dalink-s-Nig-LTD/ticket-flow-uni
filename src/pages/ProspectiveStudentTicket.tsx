@@ -207,7 +207,21 @@ const ProspectiveStudentTicket = () => {
       localStorage.removeItem(FORM_STORAGE_KEY);
       
       toast.success("Ticket submitted successfully!");
-      navigate("/confirmation", { state: { ticketData: { ticket_id: ticketId, ...values } } });
+      navigate("/confirmation", { 
+        state: { 
+          ticketData: { 
+            ticket_id: ticketId,
+            name: values.name,
+            jamb_number: values.jambNumber,
+            email: values.email,
+            department: values.department,
+            nature_of_complaint: values.natureOfComplaint,
+            subject: values.subject,
+            status: "Pending",
+            created_at: new Date().toISOString(),
+          } 
+        } 
+      });
     } catch (error: any) {
       console.error("Error submitting ticket:", error);
       const message = 
