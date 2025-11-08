@@ -11,7 +11,9 @@
 import type * as auth from "../auth.js";
 import type * as emails from "../emails.js";
 import type * as files from "../files.js";
+import type * as sessions from "../sessions.js";
 import type * as tickets from "../tickets.js";
+import type * as utils from "../utils.js";
 
 import type {
   ApiFromModules,
@@ -31,7 +33,9 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   emails: typeof emails;
   files: typeof files;
+  sessions: typeof sessions;
   tickets: typeof tickets;
+  utils: typeof utils;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

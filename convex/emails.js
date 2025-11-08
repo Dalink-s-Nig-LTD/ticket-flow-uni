@@ -1,39 +1,35 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { escapeHtml, sanitizeForEmail } from "./utils";
-
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
 export const sendTicketEmail = action({
-  args: {
-    ticketId: v.string(),
-    matricNumber: v.optional(v.string()),
-    jambNumber: v.optional(v.string()),
-    name: v.string(),
-    email: v.string(),
-    phone: v.optional(v.string()),
-    department: v.string(),
-    natureOfComplaint: v.string(),
-    subject: v.string(),
-    message: v.string(),
-    createdAt: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const departmentEmails: Record<string, string> = {
-      "ICT/Portal": "ict@run.edu.ng",
-      "Payment/Bursary": "studentaccount@run.edu.ng",
-      "Exams/Results": "ict@run.edu.ng",
-      "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
-      "Library": "library@run.edu.ng",
-      "Registrar": "registrar@run.edu.ng",
-      "Others": "ict@run.edu.ng",
-    };
-
-    const staffEmail = departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
-
-    try {
-      // Send confirmation email to student
-      const studentEmailHtml = `
+    args: {
+        ticketId: v.string(),
+        matricNumber: v.optional(v.string()),
+        jambNumber: v.optional(v.string()),
+        name: v.string(),
+        email: v.string(),
+        phone: v.optional(v.string()),
+        department: v.string(),
+        natureOfComplaint: v.string(),
+        subject: v.string(),
+        message: v.string(),
+        createdAt: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const departmentEmails = {
+            "ICT/Portal": "ict@run.edu.ng",
+            "Payment/Bursary": "studentaccount@run.edu.ng",
+            "Exams/Results": "ict@run.edu.ng",
+            "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
+            "Library": "library@run.edu.ng",
+            "Registrar": "registrar@run.edu.ng",
+            "Others": "ict@run.edu.ng",
+        };
+        const staffEmail = departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
+        try {
+            // Send confirmation email to student
+            const studentEmailHtml = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -99,28 +95,25 @@ export const sendTicketEmail = action({
           </body>
         </html>
       `;
-
-      const studentResponse = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
-          to: [args.email],
-          subject: `Ticket Confirmation - ${args.ticketId}`,
-          html: studentEmailHtml,
-        }),
-      });
-
-      if (!studentResponse.ok) {
-        const error = await studentResponse.text();
-        console.error("Failed to send student email:", error);
-      }
-
-      // Send notification email to staff
-      const staffEmailHtml = `
+            const studentResponse = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from: "RUN Support Portal <support@run.edu.ng>",
+                    to: [args.email],
+                    subject: `Ticket Confirmation - ${args.ticketId}`,
+                    html: studentEmailHtml,
+                }),
+            });
+            if (!studentResponse.ok) {
+                const error = await studentResponse.text();
+                console.error("Failed to send student email:", error);
+            }
+            // Send notification email to staff
+            const staffEmailHtml = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -185,48 +178,43 @@ export const sendTicketEmail = action({
           </body>
         </html>
       `;
-
-      const staffResponse = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
-          to: [staffEmail],
-          subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
-          html: staffEmailHtml,
-        }),
-      });
-
-      if (!staffResponse.ok) {
-        const error = await staffResponse.text();
-        console.error("Failed to send staff email:", error);
-      }
-
-      console.log("✅ Emails sent successfully");
-      console.log("Student email:", args.email);
-      console.log("Staff email:", staffEmail);
-
-      return { success: true, studentEmail: args.email, staffEmail };
-    } catch (error) {
-      console.error("Email sending error:", error);
-      return { success: false, error: String(error) };
-    }
-  },
+            const staffResponse = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from: "RUN Support Portal <support@run.edu.ng>",
+                    to: [staffEmail],
+                    subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
+                    html: staffEmailHtml,
+                }),
+            });
+            if (!staffResponse.ok) {
+                const error = await staffResponse.text();
+                console.error("Failed to send staff email:", error);
+            }
+            console.log("✅ Emails sent successfully");
+            console.log("Student email:", args.email);
+            console.log("Staff email:", staffEmail);
+            return { success: true, studentEmail: args.email, staffEmail };
+        }
+        catch (error) {
+            console.error("Email sending error:", error);
+            return { success: false, error: String(error) };
+        }
+    },
 });
-
 export const sendPasswordResetEmail = action({
-  args: {
-    email: v.string(),
-    token: v.string(),
-  },
-  handler: async (ctx, { email, token }) => {
-    const resetUrl = `https://runticket2.vercel.app/reset-password?token=${token}`;
-
-    try {
-      const emailHtml = `
+    args: {
+        email: v.string(),
+        token: v.string(),
+    },
+    handler: async (ctx, { email, token }) => {
+        const resetUrl = `https://runticket2.vercel.app/reset-password?token=${token}`;
+        try {
+            const emailHtml = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -276,58 +264,53 @@ export const sendPasswordResetEmail = action({
           </body>
         </html>
       `;
-
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
-          to: [email],
-          subject: "Password Reset Request - RUN Admin Portal",
-          html: emailHtml,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("Failed to send password reset email:", error);
-        return { success: false, error };
-      }
-
-      console.log("✅ Password reset email sent to:", email);
-      return { success: true, email };
-    } catch (error) {
-      console.error("Password reset email error:", error);
-      return { success: false, error: String(error) };
-    }
-  },
+            const response = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from: "RUN Support Portal <support@run.edu.ng>",
+                    to: [email],
+                    subject: "Password Reset Request - RUN Admin Portal",
+                    html: emailHtml,
+                }),
+            });
+            if (!response.ok) {
+                const error = await response.text();
+                console.error("Failed to send password reset email:", error);
+                return { success: false, error };
+            }
+            console.log("✅ Password reset email sent to:", email);
+            return { success: true, email };
+        }
+        catch (error) {
+            console.error("Password reset email error:", error);
+            return { success: false, error: String(error) };
+        }
+    },
 });
-
 export const sendStatusUpdateEmail = action({
-  args: {
-    ticketId: v.string(),
-    name: v.string(),
-    email: v.string(),
-    subject: v.string(),
-    oldStatus: v.string(),
-    newStatus: v.string(),
-    staffResponse: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    try {
-      const statusColors: Record<string, { bg: string; color: string }> = {
-        open: { bg: "#dbeafe", color: "#1e40af" },
-        "in-progress": { bg: "#fef3c7", color: "#92400e" },
-        resolved: { bg: "#d1fae5", color: "#065f46" },
-        closed: { bg: "#f3f4f6", color: "#374151" },
-      };
-
-      const statusColor = statusColors[args.newStatus] || statusColors.open;
-
-      const emailHtml = `
+    args: {
+        ticketId: v.string(),
+        name: v.string(),
+        email: v.string(),
+        subject: v.string(),
+        oldStatus: v.string(),
+        newStatus: v.string(),
+        staffResponse: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        try {
+            const statusColors = {
+                open: { bg: "#dbeafe", color: "#1e40af" },
+                "in-progress": { bg: "#fef3c7", color: "#92400e" },
+                resolved: { bg: "#d1fae5", color: "#065f46" },
+                closed: { bg: "#f3f4f6", color: "#374151" },
+            };
+            const statusColor = statusColors[args.newStatus] || statusColors.open;
+            const emailHtml = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -396,32 +379,30 @@ export const sendStatusUpdateEmail = action({
           </body>
         </html>
       `;
-
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "RUN Support Portal <onboarding@resend.dev>",
-          to: [args.email],
-          subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
-          html: emailHtml,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("Failed to send status update email:", error);
-        return { success: false, error };
-      }
-
-      console.log("✅ Status update email sent to:", args.email);
-      return { success: true, email: args.email };
-    } catch (error) {
-      console.error("Status update email error:", error);
-      return { success: false, error: String(error) };
-    }
-  },
+            const response = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from: "RUN Support Portal <onboarding@resend.dev>",
+                    to: [args.email],
+                    subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
+                    html: emailHtml,
+                }),
+            });
+            if (!response.ok) {
+                const error = await response.text();
+                console.error("Failed to send status update email:", error);
+                return { success: false, error };
+            }
+            console.log("✅ Status update email sent to:", args.email);
+            return { success: true, email: args.email };
+        }
+        catch (error) {
+            console.error("Status update email error:", error);
+            return { success: false, error: String(error) };
+        }
+    },
 });
