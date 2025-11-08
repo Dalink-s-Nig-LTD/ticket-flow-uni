@@ -95,6 +95,7 @@ export const sendTicketEmail = action({
           </body>
         </html>
       `;
+<<<<<<< HEAD:convex/emails.js
             const studentResponse = await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -114,6 +115,30 @@ export const sendTicketEmail = action({
             }
             // Send notification email to staff
             const staffEmailHtml = `
+=======
+
+      const studentResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "RUN Support Portal <onboarding@resend.dev>",
+          to: [args.email],
+          subject: `Ticket Confirmation - ${args.ticketId}`,
+          html: studentEmailHtml,
+        }),
+      });
+
+      if (!studentResponse.ok) {
+        const error = await studentResponse.text();
+        console.error("Failed to send student email:", error);
+      }
+
+      // Send notification email to staff
+      const staffEmailHtml = `
+>>>>>>> 40f2e851c71ea5887a2b1292cb360575ef678232:convex/emails.ts
         <!DOCTYPE html>
         <html>
           <head>
@@ -178,6 +203,7 @@ export const sendTicketEmail = action({
           </body>
         </html>
       `;
+<<<<<<< HEAD:convex/emails.js
             const staffResponse = await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -205,6 +231,38 @@ export const sendTicketEmail = action({
             return { success: false, error: String(error) };
         }
     },
+=======
+
+      const staffResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "RUN Support Portal <onboarding@resend.dev>",
+          to: [staffEmail],
+          subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
+          html: staffEmailHtml,
+        }),
+      });
+
+      if (!staffResponse.ok) {
+        const error = await staffResponse.text();
+        console.error("Failed to send staff email:", error);
+      }
+
+      console.log("✅ Emails sent successfully");
+      console.log("Student email:", args.email);
+      console.log("Staff email:", staffEmail);
+
+      return { success: true, studentEmail: args.email, staffEmail };
+    } catch (error) {
+      console.error("Email sending error:", error);
+      return { success: false, error: String(error) };
+    }
+  },
+>>>>>>> 40f2e851c71ea5887a2b1292cb360575ef678232:convex/emails.ts
 });
 export const sendPasswordResetEmail = action({
     args: {
@@ -264,6 +322,7 @@ export const sendPasswordResetEmail = action({
           </body>
         </html>
       `;
+<<<<<<< HEAD:convex/emails.js
             const response = await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -290,6 +349,36 @@ export const sendPasswordResetEmail = action({
             return { success: false, error: String(error) };
         }
     },
+=======
+
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "RUN Support Portal <onboarding@resend.dev>",
+          to: [email],
+          subject: "Password Reset Request - RUN Admin Portal",
+          html: emailHtml,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        console.error("Failed to send password reset email:", error);
+        return { success: false, error };
+      }
+
+      console.log("✅ Password reset email sent to:", email);
+      return { success: true, email };
+    } catch (error) {
+      console.error("Password reset email error:", error);
+      return { success: false, error: String(error) };
+    }
+  },
+>>>>>>> 40f2e851c71ea5887a2b1292cb360575ef678232:convex/emails.ts
 });
 export const sendStatusUpdateEmail = action({
     args: {
