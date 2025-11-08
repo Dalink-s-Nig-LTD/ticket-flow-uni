@@ -13,6 +13,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
+import { Id } from "../../convex/_generated/dataModel";
+
+type CreateTicketResponse = {
+  ticketId: Id<"tickets">;
+  ticket_id: string;
+};
 
 const formSchema = z.object({
   jambNumber: z.string()
@@ -176,7 +182,7 @@ const ProspectiveStudentTicket = () => {
         attachment_url: attachmentUrl,
       });
 
-      const ticketId = (result as any)?.ticket_id;
+      const ticketId = (result as CreateTicketResponse).ticket_id;
 
       // Send email notification
       try {
