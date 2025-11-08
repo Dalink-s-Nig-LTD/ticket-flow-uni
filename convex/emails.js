@@ -394,7 +394,7 @@ export const sendStatusUpdateEmail = action({
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+                    sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
                     to: [{ email: args.email }],
                     subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
                     htmlContent: emailHtml,
