@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { escapeHtml, sanitizeForEmail } from "./utils";
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
 export const sendTicketEmail = action({
     args: {
         ticketId: v.string(),
@@ -96,17 +96,17 @@ export const sendTicketEmail = action({
         </html>
       `;
 
-      const studentResponse = await fetch("https://api.resend.com/emails", {
+      const studentResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "api-key": BREVO_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <onboarding@resend.dev>",
-          to: [args.email],
+          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          to: [{ email: args.email }],
           subject: `Ticket Confirmation - ${args.ticketId}`,
-          html: studentEmailHtml,
+          htmlContent: studentEmailHtml,
         }),
       });
 
@@ -182,17 +182,17 @@ export const sendTicketEmail = action({
         </html>
       `;
 
-      const staffResponse = await fetch("https://api.resend.com/emails", {
+      const staffResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "api-key": BREVO_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <onboarding@resend.dev>",
-          to: [staffEmail],
+          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          to: [{ email: staffEmail }],
           subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
-          html: staffEmailHtml,
+          htmlContent: staffEmailHtml,
         }),
       });
 
@@ -271,17 +271,17 @@ export const sendPasswordResetEmail = action({
         </html>
       `;
 
-      const response = await fetch("https://api.resend.com/emails", {
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "api-key": BREVO_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <onboarding@resend.dev>",
-          to: [email],
+          sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+          to: [{ email: email }],
           subject: "Password Reset Request - RUN Admin Portal",
-          html: emailHtml,
+          htmlContent: emailHtml,
         }),
       });
 
@@ -387,17 +387,17 @@ export const sendStatusUpdateEmail = action({
           </body>
         </html>
       `;
-            const response = await fetch("https://api.resend.com/emails", {
+            const response = await fetch("https://api.brevo.com/v3/smtp/email", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    "api-key": BREVO_API_KEY,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    from: "RUN Support Portal <onboarding@resend.dev>",
-                    to: [args.email],
+                    sender: { name: "RUN Support Portal", email: "support@dalinksnigltd.com.ng" },
+                    to: [{ email: args.email }],
                     subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
-                    html: emailHtml,
+                    htmlContent: emailHtml,
                 }),
             });
             if (!response.ok) {
