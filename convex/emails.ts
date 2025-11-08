@@ -107,7 +107,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
+          from: "RUN Support Portal <onboarding@resend.dev>",
           to: [args.email],
           subject: `Ticket Confirmation - ${args.ticketId}`,
           html: studentEmailHtml,
@@ -193,7 +193,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
+          from: "RUN Support Portal <onboarding@resend.dev>",
           to: [staffEmail],
           subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
           html: staffEmailHtml,
@@ -284,7 +284,7 @@ export const sendPasswordResetEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "RUN Support Portal <support@run.edu.ng>",
+          from: "RUN Support Portal <onboarding@resend.dev>",
           to: [email],
           subject: "Password Reset Request - RUN Admin Portal",
           html: emailHtml,
