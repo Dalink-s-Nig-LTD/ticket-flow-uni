@@ -9,8 +9,11 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as auth_queries from "../auth_queries.js";
 import type * as emails from "../emails.js";
 import type * as files from "../files.js";
+import type * as roles from "../roles.js";
+import type * as roles_management from "../roles_management.js";
 import type * as sessions from "../sessions.js";
 import type * as tickets from "../tickets.js";
 import type * as utils from "../utils.js";
@@ -31,8 +34,11 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  auth_queries: typeof auth_queries;
   emails: typeof emails;
   files: typeof files;
+  roles: typeof roles;
+  roles_management: typeof roles_management;
   sessions: typeof sessions;
   tickets: typeof tickets;
   utils: typeof utils;

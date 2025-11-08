@@ -14,6 +14,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import TicketDetail from "./pages/TicketDetail";
+import DepartmentManagement from "./pages/DepartmentManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/ticket/:ticketId" element={<TicketDetail />} />
+            <Route path="/admin/departments" element={<DepartmentManagement />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

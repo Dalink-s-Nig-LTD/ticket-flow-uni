@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Ticket, CheckCircle, Clock, XCircle, RefreshCw, Search, Filter, X, SlidersHorizontal } from "lucide-react";
+import { LogOut, Ticket, CheckCircle, Clock, XCircle, RefreshCw, Search, Filter, X, SlidersHorizontal, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -183,10 +183,23 @@ const AdminDashboard = () => {
               )}
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={handleSignOut} className="flex-shrink-0">
-            <LogOut className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Sign Out</span>
-          </Button>
+          <div className="flex gap-2">
+            {userRole?.role === "super_admin" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/admin/departments")}
+                className="flex-shrink-0"
+              >
+                <Settings className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Departments</span>
+              </Button>
+            )}
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="flex-shrink-0">
+              <LogOut className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Sign Out</span>
+            </Button>
+          </div>
         </div>
       </header>
 
