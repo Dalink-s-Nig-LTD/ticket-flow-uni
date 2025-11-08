@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
 // Helper function to verify admin session
@@ -89,26 +89,48 @@ export const createTicket = mutation({
     attachment_url: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Normalize inputs
+    const normalized = {
+      matric_number: args.matric_number?.trim(),
+      jamb_number: args.jamb_number?.trim(),
+      name: args.name.trim(),
+      email: args.email.trim(),
+      phone: args.phone?.trim(),
+      department: args.department.trim(),
+      nature_of_complaint: args.nature_of_complaint.trim(),
+      subject: args.subject.trim(),
+      message: args.message.trim(),
+      attachment_url: args.attachment_url?.trim(),
+    };
+
+    console.log("[tickets.createTicket] start", {
+      email: normalized.email,
+      nature: normalized.nature_of_complaint,
+      hasMatric: Boolean(normalized.matric_number),
+      hasJamb: Boolean(normalized.jamb_number),
+      hasAttachment: Boolean(normalized.attachment_url),
+    });
+
     // SERVER-SIDE INPUT VALIDATION
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(args.email)) {
-      throw new Error("Invalid email format");
+    if (!emailRegex.test(normalized.email)) {
+      throw new ConvexError("Invalid email format");
     }
 
     // Validate input lengths
-    if (args.name.length < 2 || args.name.length > 100) {
-      throw new Error("Name must be between 2 and 100 characters");
+    if (normalized.name.length < 2 || normalized.name.length > 100) {
+      throw new ConvexError("Name must be between 2 and 100 characters");
     }
-    if (args.email.length > 255) {
-      throw new Error("Email too long");
+    if (normalized.email.length > 255) {
+      throw new ConvexError("Email too long");
     }
-    if (args.subject.length < 5 || args.subject.length > 200) {
-      throw new Error("Subject must be between 5 and 200 characters");
+    if (normalized.subject.length < 5 || normalized.subject.length > 200) {
+      throw new ConvexError("Subject must be between 5 and 200 characters");
     }
-    if (args.message.length < 10 || args.message.length > 2000) {
-      throw new Error("Message must be between 10 and 2000 characters");
+    if (normalized.message.length < 10 || normalized.message.length > 2000) {
+      throw new ConvexError("Message must be between 10 and 2000 characters");
     }
 
     // Validate nature of complaint against allowed values
@@ -121,21 +143,21 @@ export const createTicket = mutation({
       "Registrar",
       "Others"
     ];
-    if (!allowedNatures.includes(args.nature_of_complaint)) {
-      throw new Error("Invalid nature of complaint");
+    if (!allowedNatures.includes(normalized.nature_of_complaint)) {
+      throw new ConvexError("Invalid nature of complaint");
     }
 
     // Validate matric number format if provided
-    if (args.matric_number) {
+    if (normalized.matric_number) {
       const matricRegex = /^RUN\/[A-Z]+\/\d{2}\/\d{4,5}$/;
-      if (!matricRegex.test(args.matric_number)) {
-        throw new Error("Invalid matric number format");
+      if (!matricRegex.test(normalized.matric_number)) {
+        throw new ConvexError("Invalid matric number format");
       }
     }
 
     // Validate department (basic check)
-    if (args.department.length < 2 || args.department.length > 100) {
-      throw new Error("Invalid department");
+    if (normalized.department.length < 2 || normalized.department.length > 100) {
+      throw new ConvexError("Invalid department");
     }
 
     // Generate secure server-side ticket ID
@@ -150,22 +172,28 @@ export const createTicket = mutation({
     } catch {}
     const ticketId = `UNIU-${dateStr}-${String(randomNum).padStart(4, '0')}`;
     
-    const newTicketId = await ctx.db.insert("tickets", {
-      ticket_id: ticketId,
-      matric_number: args.matric_number,
-      jamb_number: args.jamb_number,
-      name: args.name,
-      email: args.email,
-      phone: args.phone,
-      department: args.department,
-      nature_of_complaint: args.nature_of_complaint,
-      subject: args.subject,
-      message: args.message,
-      status: "Pending",
-      attachment_url: args.attachment_url,
-    });
-    
-    return { ticketId: newTicketId, ticket_id: ticketId };
+    try {
+      const newTicketId = await ctx.db.insert("tickets", {
+        ticket_id: ticketId,
+        matric_number: normalized.matric_number,
+        jamb_number: normalized.jamb_number,
+        name: normalized.name,
+        email: normalized.email,
+        phone: normalized.phone,
+        department: normalized.department,
+        nature_of_complaint: normalized.nature_of_complaint,
+        subject: normalized.subject,
+        message: normalized.message,
+        status: "Pending",
+        attachment_url: normalized.attachment_url,
+      });
+      
+      console.log("[tickets.createTicket] success", { ticket_id: ticketId, _id: newTicketId });
+      return { ticketId: newTicketId, ticket_id: ticketId };
+    } catch (e) {
+      console.error("[tickets.createTicket] insert failed", e);
+      throw new ConvexError("Failed to create ticket. Please try again.");
+    }
   },
 });
 

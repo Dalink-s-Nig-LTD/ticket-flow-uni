@@ -212,7 +212,10 @@ const ProspectiveStudentTicket = () => {
       navigate("/confirmation", { state: { ticketData: { ticket_id: ticketId, ...values } } });
     } catch (error: any) {
       console.error("Error submitting ticket:", error);
-      const message = error?.data?.message || error?.message || "Failed to submit ticket. Please try again.";
+      const message = 
+        typeof error?.data === "string"
+          ? error.data
+          : error?.data?.message || error?.message || "Failed to submit ticket. Please try again.";
       toast.error(message);
     } finally {
       setIsSubmitting(false);
