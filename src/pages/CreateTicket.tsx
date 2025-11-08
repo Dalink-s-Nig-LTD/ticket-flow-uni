@@ -170,18 +170,9 @@ const CreateTicket = () => {
     setUploadProgress("");
   };
 
-  // Fallback client-side ticket ID for backends expecting it in args
-  const generateTicketId = () => {
-    const date = new Date();
-    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return `UNIU-${dateStr}-${randomNum}`;
-  };
-
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
-      const clientTicketId = generateTicketId();
       const now = new Date().toISOString();
 
       let attachmentUrl: string | undefined;
@@ -220,7 +211,6 @@ const CreateTicket = () => {
 
       // Create ticket in Convex
       const result = await createTicket({
-        ticket_id: clientTicketId,
         matric_number: values.matricNumber,
         name: values.name,
         email: values.email,
@@ -230,9 +220,9 @@ const CreateTicket = () => {
         subject: values.subject,
         message: values.message,
         attachment_url: attachmentUrl,
-      } as any);
+      });
 
-      const ticketId = (result as any)?.ticket_id ?? clientTicketId;
+      const ticketId = (result as any)?.ticket_id;
 
       // Send email notification
       try {
