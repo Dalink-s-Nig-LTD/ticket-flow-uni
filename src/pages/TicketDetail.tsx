@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { toast } from "sonner";
@@ -90,7 +90,7 @@ const TicketDetail = () => {
     api.tickets.getTicketById,
     ticketId ? { ticketId } : "skip"
   ) as Ticket | null | undefined;
-  const updateTicket = useMutation(api.tickets.updateTicket);
+  const updateTicket = useAction(api.tickets.updateTicket);
 
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
@@ -129,7 +129,7 @@ const TicketDetail = () => {
         staff_response: staffResponse || undefined,
       });
 
-      toast.success("Ticket updated successfully");
+      toast.success("Ticket updated and email notification sent to student");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       toast.error("Failed to update ticket: " + message);

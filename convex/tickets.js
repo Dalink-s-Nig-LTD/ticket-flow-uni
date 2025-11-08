@@ -1,5 +1,6 @@
 import { v, ConvexError } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { query, mutation, action } from "./_generated/server";
+import { internal } from "./_generated/api";
 // Helper function to verify admin session
 async function verifyAdminSession(ctx, sessionId) {
     if (!sessionId) {
@@ -175,8 +176,8 @@ export const createTicket = mutation({
         }
     },
 });
-// ADMIN ONLY: Update ticket
-export const updateTicket = mutation({
+// ADMIN ONLY: Update ticket (internal mutation)
+const internalUpdateTicket = mutation({
     args: {
         sessionId: v.id("sessions"),
         id: v.id("tickets"),
@@ -185,12 +186,61 @@ export const updateTicket = mutation({
     },
     handler: async (ctx, { sessionId, id, status, staff_response }) => {
         await verifyAdminSession(ctx, sessionId);
+        
+        // Get the current ticket to compare status and get student info
+        const ticket = await ctx.db.get(id);
+        if (!ticket) {
+            throw new Error("Ticket not found");
+        }
+        
         const updates = {};
         if (status !== undefined)
             updates.status = status;
         if (staff_response !== undefined)
             updates.staff_response = staff_response;
         await ctx.db.patch(id, updates);
-        return id;
+        
+        return {
+            id,
+            ticket,
+            oldStatus: ticket.status,
+            newStatus: status,
+            staff_response,
+        };
+    },
+});
+
+// ADMIN ONLY: Update ticket (public action that sends email)
+export const updateTicket = action({
+    args: {
+        sessionId: v.id("sessions"),
+        id: v.id("tickets"),
+        status: v.optional(v.string()),
+        staff_response: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        // Call the mutation to update the ticket
+        const result = await ctx.runMutation(internalUpdateTicket, args);
+        
+        // Send email notification if status changed or staff response was added
+        if (args.status || args.staff_response) {
+            try {
+                await ctx.runAction(internal.emails.sendStatusUpdateEmail, {
+                    ticketId: result.ticket.ticket_id,
+                    name: result.ticket.name,
+                    email: result.ticket.email,
+                    subject: result.ticket.subject,
+                    oldStatus: result.oldStatus || "Pending",
+                    newStatus: result.newStatus || result.oldStatus || "Pending",
+                    staffResponse: args.staff_response,
+                });
+                console.log("✅ Status update email sent successfully");
+            } catch (emailError) {
+                console.error("⚠️ Failed to send status update email:", emailError);
+                // Don't fail the ticket update if email fails
+            }
+        }
+        
+        return result.id;
     },
 });
