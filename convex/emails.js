@@ -18,13 +18,13 @@ export const sendTicketEmail = action({
     },
     handler: async (ctx, args) => {
         const departmentEmails = {
-            "ICT/Portal": "support@dalinksnigltd.com.ng",
+            "ICT/Portal": "ict@run.edu.ng",
             "Payment/Bursary": "studentaccount@run.edu.ng",
-            "Exams/Results": "support@dalinksnigltd.com.ng",
+            "Exams/Results": "ict@run.edu.ng",
             "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
             "Library": "library@run.edu.ng",
             "Registrar": "registrar@run.edu.ng",
-            "Others": "support@dalinksnigltd.com.ng",
+            "Others": "ict@run.edu.ng",
         };
         const staffEmail = departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
         try {

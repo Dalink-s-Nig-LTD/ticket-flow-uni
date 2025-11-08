@@ -1,16 +1,16 @@
 // Department-to-admin email mapping
 export const DEPARTMENT_ADMINS = {
-  "ICT/Portal": "support@dalinksnigltd.com.ng",
+  "ICT/Portal": "ict@run.edu.ng",
   "Payment/Bursary": "studentaccount@run.edu.ng",
-  "Exams/Results": "support@dalinksnigltd.com.ng",
+  "Exams/Results": "ict@run.edu.ng",
   "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
   "Library": "library@run.edu.ng",
   "Registrar": "registrar@run.edu.ng",
-  "Others": "support@dalinksnigltd.com.ng"
+  "Others": "ict@run.edu.ng"
 };
 
 // Super admins have access to all departments
-export const SUPER_ADMIN_EMAILS = ["support@dalinksnigltd.com.ng", "shawolhorizon@gmail.com"];
+export const SUPER_ADMIN_EMAILS = ["ict@run.edu.ng", "shawolhorizon@gmail.com"];
 
 // Get all departments managed by an email
 export function getDepartmentsForEmail(email) {
