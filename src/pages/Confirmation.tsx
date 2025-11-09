@@ -113,7 +113,7 @@ const Confirmation = () => {
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                 <span className="text-muted-foreground">Status:</span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning-foreground border border-warning/30">
+                <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-warning/20 text-warning-foreground border border-warning/30">
                   {ticketData.status}
                 </span>
               </div>
