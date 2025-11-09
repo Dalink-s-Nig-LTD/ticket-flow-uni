@@ -54,27 +54,13 @@ const Auth = () => {
     defaultValues: { email: "", password: "", confirmPassword: "" },
   });
 
-  const storedSessionId = typeof window !== "undefined" ? localStorage.getItem("sessionId") : null;
-  const sessionValidation = useQuery(
-    api.sessions.verifySession,
-    storedSessionId ? ({ sessionId: storedSessionId } as any) : undefined
-  );
-  const roleInfo = useQuery(
-    api.auth_queries.getCurrentUserRole,
-    storedSessionId ? ({ sessionId: storedSessionId } as any) : undefined
-  );
-
   useEffect(() => {
-    if (sessionValidation?.valid && roleInfo) {
-      if (roleInfo.role === "super_admin" || roleInfo.role === "department_admin") {
-        navigate("/admin");
-      } else {
-        // Not an admin: stay on this page
-      }
-    } else if (sessionValidation && !sessionValidation.valid) {
-      localStorage.removeItem("sessionId");
+    const sessionId = localStorage.getItem("sessionId");
+    // Simple check - just see if session exists, let admin page handle validation
+    if (sessionId) {
+      navigate("/admin");
     }
-  }, [sessionValidation, roleInfo, navigate]);
+  }, [navigate]);
 
   const onSignIn = async (values: SignInValues) => {
     setIsLoading(true);
