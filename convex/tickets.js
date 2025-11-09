@@ -1,6 +1,6 @@
 import { v, ConvexError } from "convex/values";
-import { query, mutation, action, internalMutation } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { query, mutation, action } from "./_generated/server";
+import { api } from "./_generated/api";
 import { getUserDepartments } from "./roles";
 
 // Helper function to verify admin session
@@ -215,8 +215,8 @@ export const createTicket = mutation({
         }
     },
 });
-// ADMIN ONLY: Update ticket (internal mutation)
-export const internalUpdateTicket = internalMutation({
+// ADMIN ONLY: Update ticket
+export const updateTicket = mutation({
     args: {
         sessionId: v.id("sessions"),
         id: v.id("tickets"),
@@ -246,40 +246,5 @@ export const internalUpdateTicket = internalMutation({
             newStatus: status,
             staff_response,
         };
-    },
-});
-
-// ADMIN ONLY: Update ticket (public action that sends email)
-export const updateTicket = action({
-    args: {
-        sessionId: v.id("sessions"),
-        id: v.id("tickets"),
-        status: v.optional(v.string()),
-        staff_response: v.optional(v.string()),
-    },
-    handler: async (ctx, args) => {
-        // Call the mutation to update the ticket
-        const result = await ctx.runMutation(internal.tickets.internalUpdateTicket, args);
-        
-        // Send email notification if status changed or staff response was added
-        if (args.status || args.staff_response) {
-            try {
-                await ctx.runAction(internal.emails.sendStatusUpdateEmail, {
-                    ticketId: result.ticket.ticket_id,
-                    name: result.ticket.name,
-                    email: result.ticket.email,
-                    subject: result.ticket.subject,
-                    oldStatus: result.oldStatus || "Pending",
-                    newStatus: result.newStatus || result.oldStatus || "Pending",
-                    staffResponse: args.staff_response,
-                });
-                console.log("✅ Status update email sent successfully");
-            } catch (emailError) {
-                console.error("⚠️ Failed to send status update email:", emailError);
-                // Don't fail the ticket update if email fails
-            }
-        }
-        
-        return result.id;
     },
 });
