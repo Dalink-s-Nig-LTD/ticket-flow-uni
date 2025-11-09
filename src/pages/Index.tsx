@@ -105,6 +105,7 @@ const Index = () => {
             plugins={[
               Autoplay({
                 delay: 3000,
+                stopOnInteraction: false,
               }),
             ]}
             opts={{
@@ -184,8 +185,6 @@ const Index = () => {
                 </Card>
               </CarouselItem>
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
           </Carousel>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
