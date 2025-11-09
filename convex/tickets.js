@@ -215,36 +215,48 @@ export const createTicket = mutation({
         }
     },
 });
-// ADMIN ONLY: Update ticket
-export const updateTicket = mutation({
-    args: {
-        sessionId: v.id("sessions"),
-        id: v.id("tickets"),
-        status: v.optional(v.string()),
-        staff_response: v.optional(v.string()),
-    },
-    handler: async (ctx, { sessionId, id, status, staff_response }) => {
-        await verifyAdminSession(ctx, sessionId);
-        
-        // Get the current ticket to compare status and get student info
-        const ticket = await ctx.db.get(id);
-        if (!ticket) {
-            throw new Error("Ticket not found");
-        }
-        
-        const updates = {};
-        if (status !== undefined)
-            updates.status = status;
-        if (staff_response !== undefined)
-            updates.staff_response = staff_response;
-        await ctx.db.patch(id, updates);
-        
-        return {
-            id,
-            ticket,
-            oldStatus: ticket.status,
-            newStatus: status,
-            staff_response,
-        };
-    },
+// ADMIN ONLY: Apply ticket update (mutation)
+export const applyTicketUpdate = mutation({
+  args: {
+    sessionId: v.id("sessions"),
+    id: v.id("tickets"),
+    status: v.optional(v.string()),
+    staff_response: v.optional(v.string()),
+  },
+  handler: async (ctx, { sessionId, id, status, staff_response }) => {
+    await verifyAdminSession(ctx, sessionId);
+
+    const ticket = await ctx.db.get(id);
+    if (!ticket) {
+      throw new Error("Ticket not found");
+    }
+
+    const updates: any = {};
+    if (status !== undefined) updates.status = status;
+    if (staff_response !== undefined) updates.staff_response = staff_response;
+
+    await ctx.db.patch(id, updates);
+
+    return {
+      id,
+      ticket,
+      oldStatus: ticket.status,
+      newStatus: status,
+      staff_response,
+    };
+  },
+});
+
+// ADMIN ONLY: Update ticket (action wrapper for clients still calling as action)
+export const updateTicket = action({
+  args: {
+    sessionId: v.id("sessions"),
+    id: v.id("tickets"),
+    status: v.optional(v.string()),
+    staff_response: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.runMutation(api.tickets.applyTicketUpdate, args);
+    return result.id;
+  },
 });
