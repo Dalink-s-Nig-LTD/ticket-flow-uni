@@ -116,10 +116,9 @@ const TicketDetail = () => {
   const updateTicket = useAction(api.tickets.updateTicket);
 
   useEffect(() => {
-    // Redirect non-admins
     if (userRole && userRole.role === "none") {
-      toast.error("You don't have permission to access this page");
-      navigate("/auth");
+      toast.info("You don't have admin access. Redirecting to home page.");
+      navigate("/");
     }
   }, [userRole, navigate]);
 

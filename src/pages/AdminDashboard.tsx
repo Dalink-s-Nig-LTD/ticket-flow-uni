@@ -115,12 +115,16 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Redirect non-admins
-    if (userRole && userRole.role === "none") {
-      toast.error("You don't have permission to access this page");
+    if (!sessionId) {
       navigate("/auth");
+      return;
     }
-  }, [userRole, navigate]);
+    
+    if (userRole && userRole.role === "none") {
+      toast.info("You don't have admin access. Redirecting to home page.");
+      navigate("/");
+    }
+  }, [sessionId, userRole, navigate]);
 
   const checkAuth = () => {
     const storedSessionId = localStorage.getItem("sessionId");

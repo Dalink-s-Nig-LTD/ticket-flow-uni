@@ -55,20 +55,9 @@ const Auth = () => {
   });
 
   useEffect(() => {
-    // Check if user is already logged in
     const sessionId = localStorage.getItem("sessionId");
     if (sessionId) {
-      // Check user role before redirecting
-      const checkRoleAndRedirect = async () => {
-        try {
-          const userRole = await fetch(`/api/getUserRole?sessionId=${sessionId}`).catch(() => null);
-          // For now, we'll try to get the role, but if it fails we'll just redirect based on role check
-          navigate("/admin");
-        } catch {
-          navigate("/");
-        }
-      };
-      checkRoleAndRedirect();
+      navigate("/admin");
     }
   }, [navigate]);
 
@@ -80,23 +69,9 @@ const Auth = () => {
         password: values.password,
       });
 
-      // Store session ID securely
       localStorage.setItem("sessionId", result.sessionId);
-      
-      // Import convex client to check role
-      const { convex } = await import("@/lib/convex");
-      const userRole = await convex.query(api.auth_queries.getCurrentUserRole, {
-        sessionId: result.sessionId as any,
-      });
-
-      // Route based on role
-      if (userRole && (userRole.role === "super_admin" || userRole.role === "department_admin")) {
-        toast.success("Signed in successfully!");
-        navigate("/admin");
-      } else {
-        toast.info("Signed in successfully! You can now create and track tickets.");
-        navigate("/");
-      }
+      toast.success("Signed in successfully!");
+      navigate("/admin");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
