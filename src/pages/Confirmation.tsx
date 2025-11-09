@@ -30,19 +30,19 @@ const Confirmation = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="max-w-2xl w-full">
-        <CardHeader className="text-center space-y-3 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-6 md:pb-8 p-4 md:p-6">
+        <CardHeader className="text-center space-y-2 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-4 md:pb-8 p-3 md:p-6">
           <div className="flex justify-center">
             <div className="rounded-full bg-white/20 p-2 md:p-4 animate-scale-in">
               <CheckCircle2 className="h-8 w-8 md:h-16 md:w-16 text-white animate-fade-in" />
             </div>
           </div>
-          <CardTitle className="text-2xl md:text-3xl font-bold">Ticket Submitted Successfully!</CardTitle>
-          <CardDescription className="text-white/90 text-base md:text-lg">
+          <CardTitle className="text-xl md:text-3xl font-bold">Ticket Submitted Successfully!</CardTitle>
+          <CardDescription className="text-white/90 text-sm md:text-lg">
             Your support ticket has been created and routed to the appropriate department.
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="pt-4 md:pt-8 space-y-3 md:space-y-6 p-4 md:p-6">
+        <CardContent className="pt-3 md:pt-8 space-y-2.5 md:space-y-6 p-3 md:p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3">
             <Button
               onClick={() => navigate("/track")}
@@ -73,9 +73,9 @@ const Confirmation = () => {
             </Button>
           </div>
 
-          <div className="bg-muted/50 p-4 md:p-6 rounded-lg border border-primary/10">
-            <h3 className="text-base md:text-lg font-semibold text-primary mb-3 md:mb-4">Ticket Details</h3>
-            <div className="space-y-2 md:space-y-3 text-sm md:text-base">
+          <div className="bg-muted/50 p-3 md:p-6 rounded-lg border border-primary/10">
+            <h3 className="text-sm md:text-lg font-semibold text-primary mb-2 md:mb-4">Ticket Details</h3>
+            <div className="space-y-1.5 md:space-y-3 text-xs md:text-base">
               <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                 <span className="text-muted-foreground">Ticket ID:</span>
                 <span className="font-mono font-bold text-primary break-all">{ticketData.ticket_id}</span>
@@ -120,8 +120,8 @@ const Confirmation = () => {
             </div>
           </div>
 
-          <div className="bg-info/10 border border-info/20 p-3 md:p-4 rounded-lg">
-            <p className="text-xs md:text-sm text-info-foreground">
+          <div className="bg-info/10 border border-info/20 p-2.5 md:p-4 rounded-lg">
+            <p className="text-[11px] leading-tight md:text-sm text-info-foreground">
               <strong>Note:</strong> A confirmation email has been sent to <strong className="break-all">{ticketData.email}</strong>. 
               You can track your ticket status using the Ticket ID provided above.
             </p>
