@@ -179,54 +179,54 @@ const TicketDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-4">
+        <div className="container flex h-16 items-center justify-between px-4 gap-2">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
             <img
               src={ruLogo}
               alt="Redeemer's University Logo"
-              className="h-12"
+              className="h-8 md:h-12 flex-shrink-0"
             />
-            <div>
-              <h1 className="text-lg font-bold">Ticket Details</h1>
-              <p className="text-sm text-muted-foreground">
+            <div className="min-w-0">
+              <h1 className="text-sm md:text-lg font-bold truncate">Ticket Details</h1>
+              <p className="text-xs md:text-sm text-muted-foreground truncate">
                 {ticket.ticket_id}
               </p>
             </div>
           </div>
-          <Button variant="outline" onClick={() => navigate("/admin")}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
+          <Button variant="outline" size="sm" onClick={() => navigate("/admin")} className="flex-shrink-0">
+            <ArrowLeft className="h-4 w-4 md:mr-2" />
+            <span className="hidden md:inline">Back</span>
           </Button>
         </div>
       </header>
 
-      <main className="container py-6 px-4 max-w-6xl">
-        <div className="grid gap-6 md:grid-cols-3">
+      <main className="container py-4 md:py-6 px-4 max-w-6xl">
+        <div className="grid gap-4 md:gap-6 md:grid-cols-3">
           {/* Left Column - Ticket Information */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="md:col-span-2 space-y-4 md:space-y-6">
             <Card>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-2xl mb-2">
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-lg md:text-2xl mb-2">
                       {ticket.subject}
                     </CardTitle>
-                    <CardDescription className="flex items-center gap-2 text-base">
+                    <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm md:text-base">
                       <Badge className={getStatusColor(ticket.status)}>
                         {ticket.status}
                       </Badge>
-                      <span>•</span>
-                      <span>{ticket.nature_of_complaint}</span>
+                      <span className="hidden sm:inline">•</span>
+                      <span className="break-words">{ticket.nature_of_complaint}</span>
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-4 md:p-6 space-y-4">
                 <div>
-                  <Label className="text-sm font-semibold text-muted-foreground">
+                  <Label className="text-xs md:text-sm font-semibold text-muted-foreground">
                     Description
                   </Label>
-                  <p className="mt-2 text-foreground whitespace-pre-wrap">
+                  <p className="mt-2 text-sm md:text-base text-foreground whitespace-pre-wrap">
                     {ticket.message}
                   </p>
                 </div>
@@ -234,10 +234,10 @@ const TicketDetail = () => {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Student Information</CardTitle>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-base md:text-lg">Student Information</CardTitle>
               </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+              <CardContent className="p-4 md:p-6 grid gap-3 md:gap-4 sm:grid-cols-2">
                 <div className="flex items-start gap-3">
                   <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                   <div>
@@ -310,10 +310,10 @@ const TicketDetail = () => {
 
             {/* Attachments Card */}
             <Card>
-              <CardHeader>
-                <CardTitle>Attachments</CardTitle>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-base md:text-lg">Attachments</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 md:p-6">
                 {ticket.attachment_url ? (
                   <div className="space-y-3">
                     {(() => {
@@ -369,15 +369,15 @@ const TicketDetail = () => {
           </div>
 
           {/* Right Column - Management Actions */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Ticket Management</CardTitle>
-                <CardDescription>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-base md:text-lg">Ticket Management</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
                   Update status and add response
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-4 md:p-6 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                   <Select value={status} onValueChange={setStatus}>
@@ -417,10 +417,10 @@ const TicketDetail = () => {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Timeline</CardTitle>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-base md:text-lg">Timeline</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="p-4 md:p-6 space-y-3">
                 <div className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div className="h-2 w-2 rounded-full bg-primary"></div>

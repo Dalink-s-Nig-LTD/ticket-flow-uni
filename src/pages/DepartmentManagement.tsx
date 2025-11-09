@@ -137,29 +137,31 @@ const DepartmentManagement = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6 max-w-6xl">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="container mx-auto p-4 md:p-6 max-w-6xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/admin")}
+            className="flex-shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <UserCog className="h-8 w-8" />
-              Department Management
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl md:text-3xl font-bold flex items-center gap-2">
+              <UserCog className="h-6 w-6 md:h-8 md:w-8" />
+              <span className="truncate">Department Management</span>
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
               Manage admin assignments and department access
             </p>
           </div>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button size="sm" className="w-full sm:w-auto flex-shrink-0">
                 <Plus className="mr-2 h-4 w-4" />
-                Add Assignment
+                <span className="hidden sm:inline">Add Assignment</span>
+                <span className="sm:hidden">Add</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -203,27 +205,27 @@ const DepartmentManagement = () => {
           </Dialog>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {allAdmins?.map((admin) => (
             <Card key={admin.userId}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span>{admin.email}</span>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0">
+                    <span className="text-sm md:text-base break-all">{admin.email}</span>
                     {admin.role === "super_admin" && (
-                      <Badge variant="default">Super Admin</Badge>
+                      <Badge variant="default" className="w-fit">Super Admin</Badge>
                     )}
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 md:p-6">
                 {admin.role === "super_admin" ? (
-                  <p className="text-muted-foreground">
+                  <p className="text-xs md:text-sm text-muted-foreground">
                     Has access to all departments
                   </p>
                 ) : (
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground mb-2">
+                    <p className="text-xs md:text-sm text-muted-foreground mb-2">
                       Assigned Departments:
                     </p>
                     <div className="flex flex-wrap gap-2">
