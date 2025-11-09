@@ -39,6 +39,7 @@ const AdminDashboard = () => {
   const [sortBy, setSortBy] = useState<string>("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [hasChecked, setHasChecked] = useState(false);
   
   const tickets = useQuery(
     api.tickets.getAllTickets, 
@@ -115,6 +116,8 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    if (!hasChecked) return;
+    
     if (!sessionId) {
       navigate("/auth");
       return;
@@ -124,15 +127,14 @@ const AdminDashboard = () => {
       toast.info("You don't have admin access. Redirecting to home page.");
       navigate("/");
     }
-  }, [sessionId, userRole, navigate]);
+  }, [hasChecked, sessionId, userRole, navigate]);
 
   const checkAuth = () => {
     const storedSessionId = localStorage.getItem("sessionId");
-    if (!storedSessionId) {
-      navigate("/auth");
-      return;
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
     }
-    setSessionId(storedSessionId);
+    setHasChecked(true);
   };
 
   const handleSignOut = () => {
@@ -177,6 +179,14 @@ const AdminDashboard = () => {
     inProgress: filteredAndSortedTickets.filter((t) => t.status.toLowerCase() === "in progress").length,
     resolved: filteredAndSortedTickets.filter((t) => t.status.toLowerCase() === "resolved").length,
   };
+
+  if (!hasChecked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
