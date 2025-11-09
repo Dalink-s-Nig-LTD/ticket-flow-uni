@@ -29,6 +29,16 @@ const Confirmation = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      {/* Mobile Home Icon - Top Left */}
+      <Button
+        onClick={() => navigate("/")}
+        variant="ghost"
+        size="icon"
+        className="fixed top-4 left-4 md:hidden z-10"
+      >
+        <Home className="h-5 w-5" />
+      </Button>
+
       <Card className="max-w-2xl w-full">
         <CardHeader className="text-center space-y-2 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-4 md:pb-8 p-3 md:p-6">
           <div className="flex justify-center">
@@ -43,35 +53,16 @@ const Confirmation = () => {
         </CardHeader>
 
         <CardContent className="pt-3 md:pt-8 space-y-2.5 md:space-y-6 p-3 md:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3">
-            <Button
-              onClick={() => navigate("/track")}
-              variant="default"
-              size="sm"
-              className="w-full"
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Track Ticket
-            </Button>
-            <Button
-              onClick={() => navigate("/create")}
-              variant="outline"
-              size="sm"
-              className="w-full"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              New Ticket
-            </Button>
-            <Button
-              onClick={() => navigate("/")}
-              variant="ghost"
-              size="sm"
-              className="w-full"
-            >
-              <Home className="mr-2 h-4 w-4" />
-              Home
-            </Button>
-          </div>
+          {/* Track Ticket Button */}
+          <Button
+            onClick={() => navigate("/track")}
+            variant="default"
+            size="sm"
+            className="w-full"
+          >
+            <Search className="mr-2 h-4 w-4" />
+            Track Ticket
+          </Button>
 
           <div className="bg-muted/50 p-3 md:p-6 rounded-lg border border-primary/10">
             <h3 className="text-sm md:text-lg font-semibold text-primary mb-2 md:mb-4">Ticket Details</h3>
