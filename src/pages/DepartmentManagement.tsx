@@ -39,18 +39,26 @@ const DepartmentManagement = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [hasChecked, setHasChecked] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem("sessionId");
-    if (!storedSessionId) {
-      navigate("/auth");
-      return;
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
     }
-    setSessionId(storedSessionId);
+    setHasChecked(true);
   }, [navigate]);
+
+  useEffect(() => {
+    if (!hasChecked) return;
+    
+    if (!sessionId) {
+      navigate("/auth");
+    }
+  }, [hasChecked, sessionId, navigate]);
 
   const userRole = useQuery(
     api.auth_queries.getCurrentUserRole,
@@ -67,6 +75,8 @@ const DepartmentManagement = () => {
 
   // Redirect if not super admin
   useEffect(() => {
+    if (!hasChecked) return;
+    
     if (userRole && userRole.role !== "super_admin") {
       toast({
         title: "Access Denied",
@@ -75,7 +85,7 @@ const DepartmentManagement = () => {
       });
       navigate("/admin");
     }
-  }, [userRole, navigate, toast]);
+  }, [hasChecked, userRole, navigate, toast]);
 
   const handleRemoveAssignment = async (userId: string, department: string) => {
     if (!sessionId) return;
@@ -130,6 +140,14 @@ const DepartmentManagement = () => {
       });
     }
   };
+
+  if (!hasChecked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!sessionId || !userRole || userRole.role !== "super_admin") {
     return null;
