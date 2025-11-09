@@ -32,11 +32,32 @@ export const getCurrentUserRole = query({
       .map(r => r.department)
       .filter(Boolean);
     
+    // Check if user has NO roles at all
+    if (roles.length === 0) {
+      return {
+        email: user.email,
+        role: "none",
+        departments: [],
+        displayName: "User"
+      };
+    }
+    
+    // If has department admin role
+    if (departments.length > 0) {
+      return {
+        email: user.email,
+        role: "department_admin",
+        departments,
+        displayName: `${departments.join(", ")} Admin`
+      };
+    }
+    
+    // Has roles but not department_admin (edge case)
     return {
       email: user.email,
-      role: "department_admin",
-      departments,
-      displayName: departments.length > 0 ? `${departments.join(", ")} Admin` : "Department Admin"
+      role: "none",
+      departments: [],
+      displayName: "User"
     };
   },
 });
@@ -45,9 +66,10 @@ export const getCurrentUserRole = query({
 export const getUserByEmail = internalQuery({
   args: { email: v.string() },
   handler: async (ctx, { email }) => {
+    const normalizedEmail = email.trim().toLowerCase();
     return await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
+      .withIndex("by_email", (q) => q.eq("email", normalizedEmail))
       .first();
   },
 });
@@ -59,7 +81,7 @@ export const createUser = internalMutation({
   },
   handler: async (ctx, { email, password }) => {
     return await ctx.db.insert("users", {
-      email,
+      email: email.trim().toLowerCase(),
       password,
       created_at: Date.now(),
     });

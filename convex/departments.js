@@ -10,7 +10,7 @@ export const DEPARTMENT_ADMINS = {
 };
 
 // Super admins have access to all departments
-export const SUPER_ADMIN_EMAILS = ["ict@run.edu.ng", "shawolhorizon@gmail.com"];
+export const SUPER_ADMIN_EMAILS = ["ict@run.edu.ng", "shawezhorizon@gmail.com"];
 
 // Get all departments managed by an email
 export function getDepartmentsForEmail(email) {
