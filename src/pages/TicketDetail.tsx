@@ -40,18 +40,26 @@ import ruLogo from "@/assets/ru-logo.png";
 
 const useSessionId = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [hasChecked, setHasChecked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem("sessionId");
-    if (!storedSessionId) {
-      navigate("/auth");
-      return;
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
     }
-    setSessionId(storedSessionId);
+    setHasChecked(true);
   }, [navigate]);
 
-  return sessionId;
+  useEffect(() => {
+    if (!hasChecked) return;
+    
+    if (!sessionId) {
+      navigate("/auth");
+    }
+  }, [hasChecked, sessionId, navigate]);
+
+  return { sessionId, hasChecked };
 };
 
 interface Ticket {
@@ -101,11 +109,11 @@ const TicketDetail = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [staffResponse, setStaffResponse] = useState("");
-  const sessionId = useSessionId();
+  const { sessionId, hasChecked } = useSessionId();
 
   const ticket = useQuery(
     api.tickets.getTicketById,
-    ticketId ? { ticketId } : "skip"
+    ticketId && sessionId ? { ticketId, sessionId: sessionId as any } : "skip"
   ) as Ticket | null | undefined;
   
   const userRole = useQuery(
@@ -177,7 +185,7 @@ const TicketDetail = () => {
     }
   };
 
-  if (ticket === undefined) {
+  if (!hasChecked || ticket === undefined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
