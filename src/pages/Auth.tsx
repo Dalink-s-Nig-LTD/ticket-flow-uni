@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import ruLogo from "@/assets/ru-logo.png";
@@ -58,7 +58,17 @@ const Auth = () => {
     // Check if user is already logged in
     const sessionId = localStorage.getItem("sessionId");
     if (sessionId) {
-      navigate("/admin");
+      // Check user role before redirecting
+      const checkRoleAndRedirect = async () => {
+        try {
+          const userRole = await fetch(`/api/getUserRole?sessionId=${sessionId}`).catch(() => null);
+          // For now, we'll try to get the role, but if it fails we'll just redirect based on role check
+          navigate("/admin");
+        } catch {
+          navigate("/");
+        }
+      };
+      checkRoleAndRedirect();
     }
   }, [navigate]);
 
@@ -70,10 +80,23 @@ const Auth = () => {
         password: values.password,
       });
 
-      // Store session ID securely (not email)
+      // Store session ID securely
       localStorage.setItem("sessionId", result.sessionId);
-      toast.success("Signed in successfully!");
-      navigate("/admin");
+      
+      // Import convex client to check role
+      const { convex } = await import("@/lib/convex");
+      const userRole = await convex.query(api.auth_queries.getCurrentUserRole, {
+        sessionId: result.sessionId as any,
+      });
+
+      // Route based on role
+      if (userRole && (userRole.role === "super_admin" || userRole.role === "department_admin")) {
+        toast.success("Signed in successfully!");
+        navigate("/admin");
+      } else {
+        toast.info("Signed in successfully! You can now create and track tickets.");
+        navigate("/");
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to sign in");
     } finally {

@@ -2,6 +2,57 @@ import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { SUPER_ADMIN_EMAILS, getDepartmentsForEmail } from "./departments";
 
+// Verify if session belongs to a super admin
+export async function verifySuperAdmin(ctx, sessionId) {
+  const session = await ctx.db.get(sessionId);
+  if (!session) {
+    throw new Error("Invalid session");
+  }
+  
+  const roles = await ctx.db
+    .query("user_roles")
+    .withIndex("by_user_id", (q) => q.eq("user_id", session.userId))
+    .collect();
+  
+  const isSuperAdmin = roles.some(r => r.role === "super_admin");
+  if (!isSuperAdmin) {
+    throw new Error("Only super admins can perform this action");
+  }
+  
+  return session;
+}
+
+// Manually assign role without email-based authorization logic
+export const assignRoleManually = internalMutation({
+  args: {
+    userId: v.id("users"),
+    role: v.string(),
+    departments: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, { userId, role, departments }) => {
+    if (role === "super_admin") {
+      await ctx.db.insert("user_roles", {
+        user_id: userId,
+        role: "super_admin",
+        assigned_at: Date.now(),
+      });
+    } else if (role === "department_admin") {
+      if (!departments || departments.length === 0) {
+        throw new Error("Department admins must have at least one department");
+      }
+      for (const dept of departments) {
+        await ctx.db.insert("user_roles", {
+          user_id: userId,
+          role: "department_admin",
+          department: dept,
+          assigned_at: Date.now(),
+        });
+      }
+    }
+    // If role is "regular" or undefined, don't insert any role (regular user)
+  },
+});
+
 // Assign role to user (called during signup)
 export const assignRole = internalMutation({
   args: {

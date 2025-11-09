@@ -3,6 +3,7 @@ import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
 import { isAuthorizedAdmin } from "./departments";
+import { verifySuperAdmin } from "./roles";
 export const signUp = action({
     args: {
         email: v.string(),
@@ -172,5 +173,76 @@ export const resetPassword = action({
             hashedPassword,
         });
         return { success: true };
+    },
+});
+
+// Create user with specified role (super admin only)
+export const createUserWithRole = action({
+    args: {
+        sessionId: v.id("sessions"),
+        email: v.string(),
+        password: v.string(),
+        role: v.optional(v.union(
+            v.literal("super_admin"),
+            v.literal("department_admin"),
+            v.literal("regular")
+        )),
+        departments: v.optional(v.array(v.string()))
+    },
+    handler: async (ctx, { sessionId, email, password, role, departments }) => {
+        // Verify caller is super admin
+        await verifySuperAdmin(ctx, sessionId);
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new Error("Invalid email format");
+        }
+
+        // Validate password strength
+        if (password.length < 8) {
+            throw new Error("Password must be at least 8 characters");
+        }
+        if (!/[A-Z]/.test(password)) {
+            throw new Error("Password must contain at least one uppercase letter");
+        }
+        if (!/[a-z]/.test(password)) {
+            throw new Error("Password must contain at least one lowercase letter");
+        }
+        if (!/[0-9]/.test(password)) {
+            throw new Error("Password must contain at least one number");
+        }
+
+        // Check if user already exists
+        const existing = await ctx.runQuery(internal.auth_queries.getUserByEmail, { email });
+        if (existing) {
+            throw new Error("User already exists");
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create user
+        const userId = await ctx.runMutation(internal.auth_queries.createUser, {
+            email,
+            password: hashedPassword,
+        });
+
+        // Assign role if specified (skip for regular users)
+        if (role && role !== "regular") {
+            try {
+                await ctx.runMutation(internal.roles.assignRoleManually, {
+                    userId,
+                    role,
+                    departments,
+                });
+            } catch (roleError) {
+                // If role assignment fails, delete the user
+                await ctx.runMutation(internal.auth_queries.deleteUser, { userId });
+                throw new Error("Failed to assign role. Please try again.");
+            }
+        }
+
+        return { userId, email, role: role || "regular" };
     },
 });

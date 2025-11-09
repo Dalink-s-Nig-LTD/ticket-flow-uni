@@ -114,6 +114,14 @@ const AdminDashboard = () => {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    // Redirect non-admins
+    if (userRole && userRole.role === "none") {
+      toast.error("You don't have permission to access this page");
+      navigate("/auth");
+    }
+  }, [userRole, navigate]);
+
   const checkAuth = () => {
     const storedSessionId = localStorage.getItem("sessionId");
     if (!storedSessionId) {

@@ -38,6 +38,22 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import ruLogo from "@/assets/ru-logo.png";
 
+const useSessionId = () => {
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedSessionId = localStorage.getItem("sessionId");
+    if (!storedSessionId) {
+      navigate("/auth");
+      return;
+    }
+    setSessionId(storedSessionId);
+  }, [navigate]);
+
+  return sessionId;
+};
+
 interface Ticket {
   _id: Id<"tickets">;
   ticket_id: string;
@@ -85,19 +101,27 @@ const TicketDetail = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [staffResponse, setStaffResponse] = useState("");
+  const sessionId = useSessionId();
 
   const ticket = useQuery(
     api.tickets.getTicketById,
     ticketId ? { ticketId } : "skip"
   ) as Ticket | null | undefined;
+  
+  const userRole = useQuery(
+    api.auth_queries.getCurrentUserRole,
+    sessionId ? { sessionId: sessionId as any } : "skip"
+  );
+  
   const updateTicket = useAction(api.tickets.updateTicket);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
-    if (!userEmail) {
+    // Redirect non-admins
+    if (userRole && userRole.role === "none") {
+      toast.error("You don't have permission to access this page");
       navigate("/auth");
     }
-  }, [navigate]);
+  }, [userRole, navigate]);
 
   useEffect(() => {
     if (ticket) {
