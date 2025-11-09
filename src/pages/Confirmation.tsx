@@ -32,8 +32,8 @@ const Confirmation = () => {
       <Card className="max-w-2xl w-full">
         <CardHeader className="text-center space-y-3 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-6 md:pb-8 p-4 md:p-6">
           <div className="flex justify-center">
-            <div className="rounded-full bg-white/20 p-3 md:p-4">
-              <CheckCircle2 className="h-12 w-12 md:h-16 md:w-16 text-white" />
+            <div className="rounded-full bg-white/20 p-2 md:p-4">
+              <CheckCircle2 className="h-8 w-8 md:h-16 md:w-16 text-white" />
             </div>
           </div>
           <CardTitle className="text-2xl md:text-3xl font-bold">Ticket Submitted Successfully!</CardTitle>
@@ -42,7 +42,37 @@ const Confirmation = () => {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="pt-6 md:pt-8 space-y-4 md:space-y-6 p-4 md:p-6">
+        <CardContent className="pt-4 md:pt-8 space-y-3 md:space-y-6 p-4 md:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3">
+            <Button
+              onClick={() => navigate("/track")}
+              variant="default"
+              size="sm"
+              className="w-full"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Track Ticket
+            </Button>
+            <Button
+              onClick={() => navigate("/create")}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              New Ticket
+            </Button>
+            <Button
+              onClick={() => navigate("/")}
+              variant="ghost"
+              size="sm"
+              className="w-full"
+            >
+              <Home className="mr-2 h-4 w-4" />
+              Home
+            </Button>
+          </div>
+
           <div className="bg-muted/50 p-4 md:p-6 rounded-lg border border-primary/10">
             <h3 className="text-base md:text-lg font-semibold text-primary mb-3 md:mb-4">Ticket Details</h3>
             <div className="space-y-2 md:space-y-3 text-sm md:text-base">
@@ -95,33 +125,6 @@ const Confirmation = () => {
               <strong>Note:</strong> A confirmation email has been sent to <strong className="break-all">{ticketData.email}</strong>. 
               You can track your ticket status using the Ticket ID provided above.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 pt-4">
-            <Button
-              onClick={() => navigate("/track")}
-              variant="default"
-              className="text-sm"
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Track Ticket
-            </Button>
-            <Button
-              onClick={() => navigate("/create")}
-              variant="outline"
-              className="text-sm"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              New Ticket
-            </Button>
-            <Button
-              onClick={() => navigate("/")}
-              variant="ghost"
-              className="text-sm"
-            >
-              <Home className="mr-2 h-4 w-4" />
-              Home
-            </Button>
           </div>
         </CardContent>
       </Card>
