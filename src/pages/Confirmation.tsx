@@ -29,17 +29,19 @@ const Confirmation = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Mobile Home Icon - Top Left */}
-      <Button
-        onClick={() => navigate("/")}
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 md:hidden z-10"
-      >
-        <Home className="h-5 w-5" />
-      </Button>
-
       <Card className="max-w-2xl w-full">
+        {/* Mobile Home Button - Inside Container */}
+        <div className="md:hidden p-3 pb-0">
+          <Button
+            onClick={() => navigate("/")}
+            variant="ghost"
+            size="sm"
+            className="w-fit"
+          >
+            <Home className="h-6 w-6 mr-2" />
+            Home
+          </Button>
+        </div>
         <CardHeader className="text-center space-y-2 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-4 md:pb-8 p-3 md:p-6">
           <div className="flex justify-center">
             <div className="rounded-full bg-white/20 p-2 md:p-4 animate-scale-in">
