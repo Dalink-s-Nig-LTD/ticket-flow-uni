@@ -32,8 +32,8 @@ const Confirmation = () => {
       <Card className="max-w-2xl w-full">
         <CardHeader className="text-center space-y-3 md:space-y-4 bg-success text-success-foreground rounded-t-lg pb-6 md:pb-8 p-4 md:p-6">
           <div className="flex justify-center">
-            <div className="rounded-full bg-white/20 p-2 md:p-4">
-              <CheckCircle2 className="h-8 w-8 md:h-16 md:w-16 text-white" />
+            <div className="rounded-full bg-white/20 p-2 md:p-4 animate-scale-in">
+              <CheckCircle2 className="h-8 w-8 md:h-16 md:w-16 text-white animate-fade-in" />
             </div>
           </div>
           <CardTitle className="text-2xl md:text-3xl font-bold">Ticket Submitted Successfully!</CardTitle>
