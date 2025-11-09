@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAction } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import ruLogo from "@/assets/ru-logo.png";
@@ -54,12 +54,27 @@ const Auth = () => {
     defaultValues: { email: "", password: "", confirmPassword: "" },
   });
 
+  const storedSessionId = typeof window !== "undefined" ? localStorage.getItem("sessionId") : null;
+  const sessionValidation = useQuery(
+    api.sessions.verifySession,
+    storedSessionId ? ({ sessionId: storedSessionId } as any) : undefined
+  );
+  const roleInfo = useQuery(
+    api.auth_queries.getCurrentUserRole,
+    storedSessionId ? ({ sessionId: storedSessionId } as any) : undefined
+  );
+
   useEffect(() => {
-    const sessionId = localStorage.getItem("sessionId");
-    if (sessionId) {
-      navigate("/admin");
+    if (sessionValidation?.valid && roleInfo) {
+      if (roleInfo.role === "super_admin" || roleInfo.role === "department_admin") {
+        navigate("/admin");
+      } else {
+        // Not an admin: stay on this page
+      }
+    } else if (sessionValidation && !sessionValidation.valid) {
+      localStorage.removeItem("sessionId");
     }
-  }, [navigate]);
+  }, [sessionValidation, roleInfo, navigate]);
 
   const onSignIn = async (values: SignInValues) => {
     setIsLoading(true);
