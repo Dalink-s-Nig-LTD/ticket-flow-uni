@@ -54,13 +54,6 @@ const Auth = () => {
     defaultValues: { email: "", password: "", confirmPassword: "" },
   });
 
-  useEffect(() => {
-    const sessionId = localStorage.getItem("sessionId");
-    // Simple check - just see if session exists, let admin page handle validation
-    if (sessionId) {
-      navigate("/admin");
-    }
-  }, [navigate]);
 
   const onSignIn = async (values: SignInValues) => {
     setIsLoading(true);
