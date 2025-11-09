@@ -1,5 +1,5 @@
 import { v, ConvexError } from "convex/values";
-import { query, mutation, action } from "./_generated/server";
+import { query, mutation, action, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { getUserDepartments } from "./roles";
 
@@ -216,7 +216,7 @@ export const createTicket = mutation({
     },
 });
 // ADMIN ONLY: Update ticket (internal mutation)
-const internalUpdateTicket = mutation({
+export const internalUpdateTicket = internalMutation({
     args: {
         sessionId: v.id("sessions"),
         id: v.id("tickets"),
@@ -259,7 +259,7 @@ export const updateTicket = action({
     },
     handler: async (ctx, args) => {
         // Call the mutation to update the ticket
-        const result = await ctx.runMutation(internalUpdateTicket, args);
+        const result = await ctx.runMutation(internal.tickets.internalUpdateTicket, args);
         
         // Send email notification if status changed or staff response was added
         if (args.status || args.staff_response) {
