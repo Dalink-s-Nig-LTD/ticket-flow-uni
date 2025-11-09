@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation, useQuery } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import ruLogo from "@/assets/ru-logo.png";
@@ -41,8 +41,8 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const signIn = useMutation(api.auth.signIn);
-  const signUp = useMutation(api.auth.signUp);
+  const signIn = useAction(api.auth.signIn);
+  const signUp = useAction(api.auth.signUp);
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
