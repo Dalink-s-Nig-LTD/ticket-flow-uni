@@ -53,7 +53,7 @@ const useSessionId = () => {
 
   useEffect(() => {
     if (!hasChecked) return;
-    
+
     if (!sessionId) {
       navigate("/auth");
     }
@@ -81,25 +81,25 @@ interface Ticket {
 }
 
 const getFileInfo = (url: string) => {
-  const fileName = url.split('/').pop() || 'attachment';
-  const extension = fileName.split('.').pop()?.toLowerCase();
-  
+  const fileName = url.split("/").pop() || "attachment";
+  const extension = fileName.split(".").pop()?.toLowerCase();
+
   let icon = File;
-  let fileType = 'Document';
+  let fileType = "Document";
   let canPreview = false;
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension || '')) {
+
+  if (["jpg", "jpeg", "png", "webp", "gif"].includes(extension || "")) {
     icon = ImageIcon;
-    fileType = 'Image';
+    fileType = "Image";
     canPreview = true;
-  } else if (extension === 'pdf') {
+  } else if (extension === "pdf") {
     icon = FileText;
-    fileType = 'PDF Document';
-  } else if (['doc', 'docx'].includes(extension || '')) {
+    fileType = "PDF Document";
+  } else if (["doc", "docx"].includes(extension || "")) {
     icon = FileText;
-    fileType = 'Word Document';
+    fileType = "Word Document";
   }
-  
+
   return { fileName, extension, icon, fileType, canPreview };
 };
 
@@ -110,17 +110,24 @@ const TicketDetail = () => {
   const [status, setStatus] = useState("");
   const [staffResponse, setStaffResponse] = useState("");
   const { sessionId, hasChecked } = useSessionId();
+  // Convert sessionId string to the Convex-generated Id type when present.
+  // This avoids using `any` while matching the generated API types.
+  const sessionIdForApi: Id<"sessions"> | undefined = sessionId
+    ? (sessionId as unknown as Id<"sessions">)
+    : undefined;
 
   const ticket = useQuery(
     api.tickets.getTicketById,
-    ticketId && sessionId ? { ticketId, sessionId: sessionId as any } : "skip"
+    ticketId && sessionIdForApi
+      ? { ticketId, sessionId: sessionIdForApi }
+      : "skip"
   ) as Ticket | null | undefined;
-  
+
   const userRole = useQuery(
     api.auth_queries.getCurrentUserRole,
-    sessionId ? { sessionId: sessionId as any } : "skip"
+    sessionIdForApi ? { sessionId: sessionIdForApi } : "skip"
   );
-  
+
   const updateTicket = useAction(api.tickets.updateTicket);
 
   useEffect(() => {
@@ -218,13 +225,20 @@ const TicketDetail = () => {
               className="h-8 md:h-12 flex-shrink-0"
             />
             <div className="min-w-0">
-              <h1 className="text-sm md:text-lg font-bold truncate">Ticket Details</h1>
+              <h1 className="text-sm md:text-lg font-bold truncate">
+                Ticket Details
+              </h1>
               <p className="text-xs md:text-sm text-muted-foreground truncate">
                 {ticket.ticket_id}
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={() => navigate("/admin")} className="flex-shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/admin")}
+            className="flex-shrink-0"
+          >
             <ArrowLeft className="h-4 w-4 md:mr-2" />
             <span className="hidden md:inline">Back</span>
           </Button>
@@ -247,7 +261,9 @@ const TicketDetail = () => {
                         {ticket.status}
                       </Badge>
                       <span className="hidden sm:inline">•</span>
-                      <span className="break-words">{ticket.nature_of_complaint}</span>
+                      <span className="break-words">
+                        {ticket.nature_of_complaint}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>
@@ -266,7 +282,9 @@ const TicketDetail = () => {
 
             <Card>
               <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Student Information</CardTitle>
+                <CardTitle className="text-base md:text-lg">
+                  Student Information
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-4 md:p-6 grid gap-3 md:gap-4 sm:grid-cols-2">
                 <div className="flex items-start gap-3">
@@ -342,7 +360,9 @@ const TicketDetail = () => {
             {/* Attachments Card */}
             <Card>
               <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Attachments</CardTitle>
+                <CardTitle className="text-base md:text-lg">
+                  Attachments
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
                 {ticket.attachment_url ? (
@@ -350,7 +370,7 @@ const TicketDetail = () => {
                     {(() => {
                       const fileInfo = getFileInfo(ticket.attachment_url);
                       const FileIcon = fileInfo.icon;
-                      
+
                       return (
                         <div className="border rounded-lg p-4 bg-muted/30">
                           <div className="flex items-start gap-3">
@@ -368,21 +388,25 @@ const TicketDetail = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => window.open(ticket.attachment_url, '_blank')}
+                              onClick={() =>
+                                window.open(ticket.attachment_url, "_blank")
+                              }
                               className="shrink-0"
                             >
                               <Download className="h-4 w-4 mr-1" />
                               View
                             </Button>
                           </div>
-                          
+
                           {fileInfo.canPreview && (
                             <div className="mt-3 pt-3 border-t">
                               <img
                                 src={ticket.attachment_url}
                                 alt="Attachment preview"
                                 className="w-full h-48 object-cover rounded-md cursor-pointer hover:opacity-90 transition-opacity"
-                                onClick={() => window.open(ticket.attachment_url, '_blank')}
+                                onClick={() =>
+                                  window.open(ticket.attachment_url, "_blank")
+                                }
                               />
                             </div>
                           )}
@@ -403,7 +427,9 @@ const TicketDetail = () => {
           <div className="space-y-4 md:space-y-6">
             <Card>
               <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Ticket Management</CardTitle>
+                <CardTitle className="text-base md:text-lg">
+                  Ticket Management
+                </CardTitle>
                 <CardDescription className="text-xs md:text-sm">
                   Update status and add response
                 </CardDescription>

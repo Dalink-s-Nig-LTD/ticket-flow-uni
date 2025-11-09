@@ -231,7 +231,7 @@ export const applyTicketUpdate = mutation({
       throw new Error("Ticket not found");
     }
 
-    const updates: any = {};
+    const updates = {};
     if (status !== undefined) updates.status = status;
     if (staff_response !== undefined) updates.staff_response = staff_response;
 
