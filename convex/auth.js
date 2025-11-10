@@ -2,14 +2,8 @@ import { v } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
+import { isAuthorizedAdmin } from "./departments";
 import { verifySuperAdmin } from "./roles";
-
-// Use a fixed bcrypt-format dummy hash string for constant-time checks when a
-// user is not found. We must NOT call bcrypt.hashSync here because bcryptjs
-// may use timers internally (setTimeout), which Convex disallows in queries
-// and mutations. Constructing a valid-looking 60-char hash string avoids that
-// problem while ensuring bcrypt.compare receives a correctly formatted hash.
-const DUMMY_BCRYPT_HASH = "$2a$10$" + "A".repeat(53);
 export const signUp = action({
     args: {
         email: v.string(),
@@ -38,15 +32,29 @@ export const signUp = action({
         if (existing) {
             throw new Error("User already exists");
         }
-
-        // Create a regular user account (no admin role assigned here).
-        // Admins should be created via the `createUserWithRole` endpoint by a super admin.
+        // Check if email is authorized as admin
+        if (!isAuthorizedAdmin(email)) {
+            throw new Error("This email is not authorized as an admin. Please contact IT support.");
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = await ctx.runMutation(internal.auth_queries.createUser, {
             email,
             password: hashedPassword,
         });
-
+        
+        // Assign role to the new user
+        try {
+            await ctx.runMutation(internal.roles.assignRole, {
+                userId,
+                email,
+            });
+        } catch (roleError) {
+            // If role assignment fails, delete the user
+            await ctx.runMutation(internal.auth_queries.deleteUser, { userId });
+            throw new Error("Failed to assign admin role. Please try again.");
+        }
+        
         return { userId, email };
     },
 });
@@ -58,11 +66,10 @@ export const signIn = action({
     handler: async (ctx, { email, password }) => {
         // Use constant-time comparison to prevent timing attacks
         const user = await ctx.runQuery(internal.auth_queries.getUserByEmail, { email });
-    // Always check password even if user doesn't exist (prevent timing attack)
-    // Use a valid precomputed bcrypt hash when the user record is missing so
-    // that bcrypt.compare never receives a malformed hash and throws.
-    const passwordToCheck = user?.password || DUMMY_BCRYPT_HASH;
-    const isValidPassword = await bcrypt.compare(password, passwordToCheck);
+        // Always check password even if user doesn't exist (prevent timing attack)
+        const dummyHash = "$2a$10$abcdefghijklmnopqrstuv1234567890123456789012";
+        const passwordToCheck = user?.password || dummyHash;
+        const isValidPassword = await bcrypt.compare(password, passwordToCheck);
         if (!user || !isValidPassword) {
             throw new Error("Invalid credentials");
         }
