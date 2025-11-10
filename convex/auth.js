@@ -50,7 +50,7 @@ export const signUp = action({
         return { userId, email };
     },
 });
-export const signIn = mutation({
+export const signIn = action({
     args: {
         email: v.string(),
         password: v.string(),
