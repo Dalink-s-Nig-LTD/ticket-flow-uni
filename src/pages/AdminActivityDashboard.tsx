@@ -10,6 +10,9 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
+  Download,
+  FileText,
+  FileSpreadsheet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +41,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { exportToCSV, exportToPDF } from "@/lib/exportUtils";
 
 const AdminActivityDashboard = () => {
   const navigate = useNavigate();
@@ -90,6 +94,28 @@ const AdminActivityDashboard = () => {
     });
   };
 
+  const handleExportCSV = () => {
+    if (!statsData) return;
+    try {
+      exportToCSV(statsData);
+      toast.success("Report exported as CSV successfully");
+    } catch (error) {
+      console.error("CSV export error:", error);
+      toast.error("Failed to export CSV report");
+    }
+  };
+
+  const handleExportPDF = () => {
+    if (!statsData) return;
+    try {
+      exportToPDF(statsData);
+      toast.success("Report exported as PDF successfully");
+    } catch (error) {
+      console.error("PDF export error:", error);
+      toast.error("Failed to export PDF report");
+    }
+  };
+
   // Prepare chart data for department distribution
   const departmentChartData = statsData
     ? Object.entries(statsData.departmentDistribution).map(([dept, count]) => ({
@@ -135,15 +161,37 @@ const AdminActivityDashboard = () => {
               </p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/admin")}
-            className="flex-shrink-0"
-          >
-            <ArrowLeft className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Back</span>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportCSV}
+              className="flex-shrink-0"
+              title="Export as CSV"
+            >
+              <FileSpreadsheet className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">CSV</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportPDF}
+              className="flex-shrink-0"
+              title="Export as PDF"
+            >
+              <FileText className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">PDF</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/admin")}
+              className="flex-shrink-0"
+            >
+              <ArrowLeft className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Back</span>
+            </Button>
+          </div>
         </div>
       </header>
 
