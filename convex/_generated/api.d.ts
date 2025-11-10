@@ -10,6 +10,7 @@
 
 import type * as auth from "../auth.js";
 import type * as auth_queries from "../auth_queries.js";
+import type * as debug from "../debug.js";
 import type * as departments from "../departments.js";
 import type * as emails from "../emails.js";
 import type * as files from "../files.js";
@@ -37,6 +38,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   auth_queries: typeof auth_queries;
+  debug: typeof debug;
   departments: typeof departments;
   emails: typeof emails;
   files: typeof files;

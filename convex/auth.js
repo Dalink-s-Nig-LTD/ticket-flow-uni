@@ -43,7 +43,7 @@ export const signUp = action({
         return { userId, email };
     },
 });
-export const signIn = action({
+export const signIn = mutation({
     args: {
         email: v.string(),
         password: v.string(),

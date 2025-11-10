@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
+import DepartmentAdmin from "./pages/DepartmentAdmin";
 import TicketDetail from "./pages/TicketDetail";
 import DepartmentManagement from "./pages/DepartmentManagement";
 import NotFound from "./pages/NotFound";
@@ -40,8 +41,15 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route
+              path="/admin/department/:departmentName"
+              element={<DepartmentAdmin />}
+            />
             <Route path="/admin/ticket/:ticketId" element={<TicketDetail />} />
-            <Route path="/admin/departments" element={<DepartmentManagement />} />
+            <Route
+              path="/admin/departments"
+              element={<DepartmentManagement />}
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

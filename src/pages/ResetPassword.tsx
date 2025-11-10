@@ -6,24 +6,42 @@ import * as z from "zod";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useMutation, useQuery } from "convex/react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useAction, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import ruLogo from "@/assets/ru-logo.png";
 
-const resetPasswordSchema = z.object({
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 
@@ -31,16 +49,16 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const tokenVerification = useQuery(
     api.auth.verifyResetToken,
     token ? { token } : "skip"
   );
-  const resetPassword = useMutation(api.auth.resetPassword);
+  const resetPassword = useAction(api.auth.resetPassword);
 
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -67,7 +85,9 @@ const ResetPassword = () => {
       toast.success("Password reset successfully! You can now sign in.");
       navigate("/auth");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to reset password");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to reset password"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +98,9 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">Verifying reset link...</p>
+            <p className="text-center text-muted-foreground">
+              Verifying reset link...
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -91,12 +113,17 @@ const ResetPassword = () => {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-4 text-center">
             <div className="flex justify-center">
-              <img src={ruLogo} alt="Redeemer's University Logo" className="h-16" />
+              <img
+                src={ruLogo}
+                alt="Redeemer's University Logo"
+                className="h-16"
+              />
             </div>
             <div>
               <CardTitle className="text-2xl">Invalid Reset Link</CardTitle>
               <CardDescription>
-                {tokenVerification.error || "This password reset link is invalid or has expired"}
+                {tokenVerification.error ||
+                  "This password reset link is invalid or has expired"}
               </CardDescription>
             </div>
           </CardHeader>
@@ -120,13 +147,15 @@ const ResetPassword = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
-            <img src={ruLogo} alt="Redeemer's University Logo" className="h-16" />
+            <img
+              src={ruLogo}
+              alt="Redeemer's University Logo"
+              className="h-16"
+            />
           </div>
           <div>
             <CardTitle className="text-2xl">Create New Password</CardTitle>
-            <CardDescription>
-              Enter your new password below
-            </CardDescription>
+            <CardDescription>Enter your new password below</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -152,7 +181,11 @@ const ResetPassword = () => {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                         >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </button>
                       </div>
                     </FormControl>
@@ -178,10 +211,16 @@ const ResetPassword = () => {
                         />
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                         >
-                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </button>
                       </div>
                     </FormControl>
@@ -197,9 +236,9 @@ const ResetPassword = () => {
           </Form>
 
           <div className="mt-4 text-center">
-            <Button 
-              variant="link" 
-              onClick={() => navigate("/auth")} 
+            <Button
+              variant="link"
+              onClick={() => navigate("/auth")}
               className="text-sm"
             >
               Back to Sign In
