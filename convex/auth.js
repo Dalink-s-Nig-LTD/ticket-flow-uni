@@ -39,13 +39,26 @@ export const signUp = action({
             throw new Error("User already exists");
         }
 
-        // Create a regular user account (no admin role assigned here).
-        // Admins should be created via the `createUserWithRole` endpoint by a super admin.
+        // Create user account
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = await ctx.runMutation(internal.auth_queries.createUser, {
             email,
             password: hashedPassword,
         });
+
+        // Auto-assign role if email is in SUPER_ADMIN_EMAILS or DEPARTMENT_ADMINS
+        try {
+            await ctx.runMutation(internal.roles.assignRole, {
+                userId,
+                email,
+            });
+        } catch (error) {
+            // If assignRole throws "not authorized as admin", it's a regular user - continue
+            // Any other error should be re-thrown
+            if (!error.message?.includes("not authorized as an admin")) {
+                throw error;
+            }
+        }
 
         return { userId, email };
     },
