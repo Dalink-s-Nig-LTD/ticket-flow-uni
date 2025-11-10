@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
-import { isAuthorizedAdmin } from "./departments";
 import { verifySuperAdmin } from "./roles";
 export const signUp = action({
     args: {
@@ -32,29 +31,15 @@ export const signUp = action({
         if (existing) {
             throw new Error("User already exists");
         }
-        // Check if email is authorized as admin
-        if (!isAuthorizedAdmin(email)) {
-            throw new Error("This email is not authorized as an admin. Please contact IT support.");
-        }
-        
+
+        // Create a regular user account (no admin role assigned here).
+        // Admins should be created via the `createUserWithRole` endpoint by a super admin.
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = await ctx.runMutation(internal.auth_queries.createUser, {
             email,
             password: hashedPassword,
         });
-        
-        // Assign role to the new user
-        try {
-            await ctx.runMutation(internal.roles.assignRole, {
-                userId,
-                email,
-            });
-        } catch (roleError) {
-            // If role assignment fails, delete the user
-            await ctx.runMutation(internal.auth_queries.deleteUser, { userId });
-            throw new Error("Failed to assign admin role. Please try again.");
-        }
-        
+
         return { userId, email };
     },
 });
