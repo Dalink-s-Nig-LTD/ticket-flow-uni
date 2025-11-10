@@ -144,7 +144,7 @@ const Auth = () => {
     const role = roleResult.role;
 
     if (role === "super_admin") {
-      navigate("/superadmin");
+      navigate("/admin");
       return;
     }
 
