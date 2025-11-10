@@ -109,7 +109,7 @@ const DepartmentAdmin = () => {
   const filteredTickets = useMemo(() => {
     if (!dept) return [] as Ticket[];
     return (ticketsWithLocal as Ticket[]).filter(
-      (t) => t.department?.toLowerCase() === dept.toLowerCase()
+      (t) => t.nature_of_complaint?.toLowerCase() === dept.toLowerCase()
     );
   }, [ticketsWithLocal, dept]);
 
