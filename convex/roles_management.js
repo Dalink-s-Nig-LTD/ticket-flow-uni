@@ -166,3 +166,102 @@ export const addAdminDepartment = mutation({
     return { success: true };
   },
 });
+
+// Promote a user to super admin (super admin only)
+export const promoteToSuperAdmin = mutation({
+  args: {
+    sessionId: v.id("sessions"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, { sessionId, userId }) => {
+    const session = await ctx.db.get(sessionId);
+    if (!session) throw new Error("Invalid session");
+
+    // Check if caller is super admin
+    const callerRoles = await ctx.db
+      .query("user_roles")
+      .withIndex("by_user_id", (q) => q.eq("user_id", session.userId))
+      .collect();
+
+    const isSuperAdmin = callerRoles.some((r) => r.role === "super_admin");
+    if (!isSuperAdmin) {
+      throw new Error("Only super admins can promote users");
+    }
+
+    // Check if target user already has super admin role
+    const targetRoles = await ctx.db
+      .query("user_roles")
+      .withIndex("by_user_id", (q) => q.eq("user_id", userId))
+      .collect();
+
+    if (targetRoles.some((r) => r.role === "super_admin")) {
+      throw new Error("User is already a super admin");
+    }
+
+    // Add super admin role
+    await ctx.db.insert("user_roles", {
+      user_id: userId,
+      role: "super_admin",
+      assigned_at: Date.now(),
+    });
+
+    return { success: true };
+  },
+});
+
+// Demote a super admin (super admin only)
+export const demoteFromSuperAdmin = mutation({
+  args: {
+    sessionId: v.id("sessions"),
+    userId: v.id("users"),
+    convertToDepartmentAdmin: v.optional(v.boolean()),
+    departments: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, { sessionId, userId, convertToDepartmentAdmin, departments }) => {
+    const session = await ctx.db.get(sessionId);
+    if (!session) throw new Error("Invalid session");
+
+    // Check if caller is super admin
+    const callerRoles = await ctx.db
+      .query("user_roles")
+      .withIndex("by_user_id", (q) => q.eq("user_id", session.userId))
+      .collect();
+
+    const isSuperAdmin = callerRoles.some((r) => r.role === "super_admin");
+    if (!isSuperAdmin) {
+      throw new Error("Only super admins can demote users");
+    }
+
+    // Prevent demoting yourself
+    if (session.userId === userId) {
+      throw new Error("You cannot demote yourself");
+    }
+
+    // Find and remove super admin role
+    const targetRoles = await ctx.db
+      .query("user_roles")
+      .withIndex("by_user_id", (q) => q.eq("user_id", userId))
+      .collect();
+
+    const superAdminRole = targetRoles.find((r) => r.role === "super_admin");
+    if (!superAdminRole) {
+      throw new Error("User is not a super admin");
+    }
+
+    await ctx.db.delete(superAdminRole._id);
+
+    // Optionally convert to department admin
+    if (convertToDepartmentAdmin && departments && departments.length > 0) {
+      for (const dept of departments) {
+        await ctx.db.insert("user_roles", {
+          user_id: userId,
+          role: "department_admin",
+          department: dept,
+          assigned_at: Date.now(),
+        });
+      }
+    }
+
+    return { success: true };
+  },
+});

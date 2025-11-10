@@ -5,8 +5,24 @@ import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, UserCog, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, UserCog, Trash2, Plus, Crown, UserMinus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +59,12 @@ const DepartmentManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false);
+  const [isDemoteDialogOpen, setIsDemoteDialogOpen] = useState(false);
+  const [isConvertDialogOpen, setIsConvertDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserEmail, setSelectedUserEmail] = useState<string | null>(null);
+  const [demoteDepartments, setDemoteDepartments] = useState<string[]>([]);
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem("sessionId");
@@ -60,10 +82,12 @@ const DepartmentManagement = () => {
     }
   }, [hasChecked, sessionId, navigate]);
 
-  const userRole = useQuery(
+  const userRoleData = useQuery(
     api.auth_queries.getCurrentUserRole,
     sessionId ? { sessionId: sessionId as any } : "skip"
   );
+
+  const userRole = userRoleData ? { ...userRoleData, userId: sessionId } : null;
 
   const allAdmins = useQuery(
     api.roles_management.getAllAdmins,
@@ -72,6 +96,8 @@ const DepartmentManagement = () => {
 
   const removeAssignment = useMutation(api.roles_management.removeAdminDepartment);
   const addAssignment = useMutation(api.roles_management.addAdminDepartment);
+  const promoteToSuperAdmin = useMutation(api.roles_management.promoteToSuperAdmin);
+  const demoteFromSuperAdmin = useMutation(api.roles_management.demoteFromSuperAdmin);
 
   // Redirect if not super admin
   useEffect(() => {
@@ -139,6 +165,95 @@ const DepartmentManagement = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handlePromoteToSuperAdmin = async () => {
+    if (!sessionId || !selectedUserId) return;
+
+    try {
+      await promoteToSuperAdmin({
+        sessionId: sessionId as any,
+        userId: selectedUserId as any,
+      });
+      toast({
+        title: "Promoted Successfully",
+        description: `${selectedUserEmail} is now a super admin`,
+      });
+      setIsPromoteDialogOpen(false);
+      setSelectedUserId(null);
+      setSelectedUserEmail(null);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to promote user",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDemoteToRegularUser = async () => {
+    if (!sessionId || !selectedUserId) return;
+
+    try {
+      await demoteFromSuperAdmin({
+        sessionId: sessionId as any,
+        userId: selectedUserId as any,
+        convertToDepartmentAdmin: false,
+      });
+      toast({
+        title: "Demoted Successfully",
+        description: `${selectedUserEmail} has been demoted to regular user`,
+      });
+      setIsDemoteDialogOpen(false);
+      setSelectedUserId(null);
+      setSelectedUserEmail(null);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to demote user",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConvertToDepartmentAdmin = async () => {
+    if (!sessionId || !selectedUserId || demoteDepartments.length === 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please select at least one department",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await demoteFromSuperAdmin({
+        sessionId: sessionId as any,
+        userId: selectedUserId as any,
+        convertToDepartmentAdmin: true,
+        departments: demoteDepartments,
+      });
+      toast({
+        title: "Converted Successfully",
+        description: `${selectedUserEmail} is now a department admin`,
+      });
+      setIsConvertDialogOpen(false);
+      setSelectedUserId(null);
+      setSelectedUserEmail(null);
+      setDemoteDepartments([]);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to convert user",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleDepartment = (dept: string) => {
+    setDemoteDepartments(prev =>
+      prev.includes(dept) ? prev.filter(d => d !== dept) : [...prev, dept]
+    );
   };
 
   if (!hasChecked) {
@@ -234,6 +349,54 @@ const DepartmentManagement = () => {
                       <Badge variant="default" className="w-fit">Super Admin</Badge>
                     )}
                   </div>
+                  <div className="flex gap-2">
+                    {admin.role === "department_admin" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedUserId(admin.userId);
+                          setSelectedUserEmail(admin.email);
+                          setIsPromoteDialogOpen(true);
+                        }}
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        Promote
+                      </Button>
+                    )}
+                    {admin.role === "super_admin" && admin.userId !== userRole?.userId && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="outline">
+                            <UserMinus className="h-4 w-4 mr-2" />
+                            Demote
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setSelectedUserId(admin.userId);
+                              setSelectedUserEmail(admin.email);
+                              setIsDemoteDialogOpen(true);
+                            }}
+                          >
+                            <UserMinus className="h-4 w-4 mr-2" />
+                            Demote to Regular User
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setSelectedUserId(admin.userId);
+                              setSelectedUserEmail(admin.email);
+                              setIsConvertDialogOpen(true);
+                            }}
+                          >
+                            <Users className="h-4 w-4 mr-2" />
+                            Convert to Department Admin
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
@@ -282,6 +445,86 @@ const DepartmentManagement = () => {
             </Card>
           )}
         </div>
+
+        {/* Promote Dialog */}
+        <AlertDialog open={isPromoteDialogOpen} onOpenChange={setIsPromoteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Promote to Super Admin?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to promote <strong>{selectedUserEmail}</strong> to Super Admin? 
+                They will have access to all departments and management features.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handlePromoteToSuperAdmin}>
+                Promote
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Demote to Regular User Dialog */}
+        <AlertDialog open={isDemoteDialogOpen} onOpenChange={setIsDemoteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Demote to Regular User?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to demote <strong>{selectedUserEmail}</strong> to a regular user? 
+                They will lose all admin privileges and department access.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDemoteToRegularUser} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Demote
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Convert to Department Admin Dialog */}
+        <Dialog open={isConvertDialogOpen} onOpenChange={setIsConvertDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Convert to Department Admin</DialogTitle>
+              <DialogDescription>
+                Convert <strong>{selectedUserEmail}</strong> from Super Admin to Department Admin. 
+                Select the departments they should manage.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <Label>Select Departments</Label>
+                <div className="border rounded-md p-4 space-y-2 max-h-60 overflow-y-auto">
+                  {DEPARTMENTS.map((dept) => (
+                    <div key={dept} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`dept-${dept}`}
+                        checked={demoteDepartments.includes(dept)}
+                        onChange={() => toggleDepartment(dept)}
+                        className="h-4 w-4"
+                      />
+                      <label htmlFor={`dept-${dept}`} className="text-sm cursor-pointer">
+                        {dept}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsConvertDialogOpen(false)} className="flex-1">
+                  Cancel
+                </Button>
+                <Button onClick={handleConvertToDepartmentAdmin} className="flex-1">
+                  Convert
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
