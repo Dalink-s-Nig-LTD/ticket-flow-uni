@@ -12,6 +12,7 @@ import {
   X,
   SlidersHorizontal,
   Settings,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -288,15 +289,26 @@ const AdminDashboard = () => {
           </div>
           <div className="flex gap-2">
             {userRole?.role === "super_admin" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/admin/departments")}
-                className="flex-shrink-0"
-              >
-                <Settings className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Departments</span>
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/admin/activity")}
+                  className="flex-shrink-0"
+                >
+                  <Activity className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Activity</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/admin/departments")}
+                  className="flex-shrink-0"
+                >
+                  <Settings className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Departments</span>
+                </Button>
+              </>
             )}
             <Button
               variant="outline"

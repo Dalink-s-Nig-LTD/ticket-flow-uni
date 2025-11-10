@@ -16,6 +16,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import DepartmentAdmin from "./pages/DepartmentAdmin";
 import TicketDetail from "./pages/TicketDetail";
 import DepartmentManagement from "./pages/DepartmentManagement";
+import AdminActivityDashboard from "./pages/AdminActivityDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,10 @@ const App = () => (
             <Route
               path="/admin/departments"
               element={<DepartmentManagement />}
+            />
+            <Route
+              path="/admin/activity"
+              element={<AdminActivityDashboard />}
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
