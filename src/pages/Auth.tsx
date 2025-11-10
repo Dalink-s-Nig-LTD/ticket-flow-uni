@@ -60,8 +60,8 @@ const Auth = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [sessionForRole, setSessionForRole] = useState<string | null>(null);
 
-  const signIn = useMutation(api.auth.signIn);
-  const signUp = useMutation(api.auth.signUp);
+  const signIn = useAction(api.auth.signIn);
+  const signUp = useAction(api.auth.signUp);
   const roleResult = useQuery(
     api.auth_queries.getCurrentUserRole,
     sessionForRole ? { sessionId: sessionForRole } : "skip"
