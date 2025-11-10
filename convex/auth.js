@@ -3,6 +3,12 @@ import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
 import { verifySuperAdmin } from "./roles";
+
+// Precompute a valid dummy bcrypt hash to use for constant-time password checks
+// when a user is not found. Using an invalid hash here can cause bcrypt.compare
+// to throw and produce a server error (seen in production logs). A precomputed
+// valid hash avoids that failure mode while still providing timing resistance.
+const DUMMY_BCRYPT_HASH = bcrypt.hashSync("invalid_dummy_password_for_timing", 10);
 export const signUp = action({
     args: {
         email: v.string(),
@@ -51,10 +57,11 @@ export const signIn = mutation({
     handler: async (ctx, { email, password }) => {
         // Use constant-time comparison to prevent timing attacks
         const user = await ctx.runQuery(internal.auth_queries.getUserByEmail, { email });
-        // Always check password even if user doesn't exist (prevent timing attack)
-        const dummyHash = "$2a$10$abcdefghijklmnopqrstuv1234567890123456789012";
-        const passwordToCheck = user?.password || dummyHash;
-        const isValidPassword = await bcrypt.compare(password, passwordToCheck);
+    // Always check password even if user doesn't exist (prevent timing attack)
+    // Use a valid precomputed bcrypt hash when the user record is missing so
+    // that bcrypt.compare never receives a malformed hash and throws.
+    const passwordToCheck = user?.password || DUMMY_BCRYPT_HASH;
+    const isValidPassword = await bcrypt.compare(password, passwordToCheck);
         if (!user || !isValidPassword) {
             throw new Error("Invalid credentials");
         }
