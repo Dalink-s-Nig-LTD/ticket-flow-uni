@@ -4,11 +4,12 @@ import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
 import { verifySuperAdmin } from "./roles";
 
-// Precompute a valid dummy bcrypt hash to use for constant-time password checks
-// when a user is not found. Using an invalid hash here can cause bcrypt.compare
-// to throw and produce a server error (seen in production logs). A precomputed
-// valid hash avoids that failure mode while still providing timing resistance.
-const DUMMY_BCRYPT_HASH = bcrypt.hashSync("invalid_dummy_password_for_timing", 10);
+// Use a fixed bcrypt-format dummy hash string for constant-time checks when a
+// user is not found. We must NOT call bcrypt.hashSync here because bcryptjs
+// may use timers internally (setTimeout), which Convex disallows in queries
+// and mutations. Constructing a valid-looking 60-char hash string avoids that
+// problem while ensuring bcrypt.compare receives a correctly formatted hash.
+const DUMMY_BCRYPT_HASH = "$2a$10$" + "A".repeat(53);
 export const signUp = action({
     args: {
         email: v.string(),
