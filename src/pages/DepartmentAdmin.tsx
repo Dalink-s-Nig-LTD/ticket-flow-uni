@@ -305,14 +305,6 @@ const DepartmentAdmin = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate("/admin")}
-              className="flex-shrink-0"
-            >
-              Back
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               onClick={() => {
                 localStorage.removeItem("sessionId");
                 toast.success("Signed out");
