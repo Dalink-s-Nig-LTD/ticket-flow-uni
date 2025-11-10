@@ -32,29 +32,28 @@ export const signUp = action({
         if (existing) {
             throw new Error("User already exists");
         }
-        // Check if email is authorized as admin
-        if (!isAuthorizedAdmin(email)) {
-            throw new Error("This email is not authorized as an admin. Please contact IT support.");
-        }
-        
+
+        // Create user account
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = await ctx.runMutation(internal.auth_queries.createUser, {
             email,
             password: hashedPassword,
         });
-        
-        // Assign role to the new user
+
+        // Auto-assign role if email is in SUPER_ADMIN_EMAILS or DEPARTMENT_ADMINS
         try {
             await ctx.runMutation(internal.roles.assignRole, {
                 userId,
                 email,
             });
-        } catch (roleError) {
-            // If role assignment fails, delete the user
-            await ctx.runMutation(internal.auth_queries.deleteUser, { userId });
-            throw new Error("Failed to assign admin role. Please try again.");
+        } catch (error) {
+            // If assignRole throws "not authorized as admin", it's a regular user - continue
+            // Any other error should be re-thrown
+            if (!error.message?.includes("not authorized as an admin")) {
+                throw error;
+            }
         }
-        
+
         return { userId, email };
     },
 });
