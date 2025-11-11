@@ -44,7 +44,7 @@ const Index = () => {
             />
           </div>
           <Button variant="outline" onClick={() => navigate("/auth")}>
-            Admin Login
+            Admin
           </Button>
         </div>
       </header>

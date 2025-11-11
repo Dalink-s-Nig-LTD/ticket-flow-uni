@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as admin_analytics from "../admin_analytics.js";
 import type * as auth from "../auth.js";
 import type * as auth_queries from "../auth_queries.js";
 import type * as debug from "../debug.js";
@@ -36,6 +37,7 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  admin_analytics: typeof admin_analytics;
   auth: typeof auth;
   auth_queries: typeof auth_queries;
   debug: typeof debug;
