@@ -121,7 +121,7 @@ export const sendTicketEmail = action({
                 </div>
                 
                 <div style="text-align: center;">
-                  <a href="https://runticket2.vercel.app/track" class="track-button">Track Your Ticket</a>
+                  <a href="https://dictsupport.vercel.app/track" class="track-button">Track Your Ticket</a>
                 </div>
                 
                 <p style="margin-top: 20px;">You will receive email updates when there are changes to your ticket status.</p>
@@ -200,7 +200,7 @@ export const sendTicketEmail = action({
                 </div>
                 
                 <div style="text-align: center;">
-                  <a href="https://runticket2.vercel.app/admin" class="view-button">View in Admin Portal</a>
+                  <a href="https://dictsupport.vercel.app/admin" class="view-button">View in Admin Portal</a>
                 </div>
               </div>
             </div>
@@ -229,7 +229,7 @@ export const sendPasswordResetEmail = action({
     token: v.string(),
   },
   handler: async (ctx, { email, token }) => {
-    const resetUrl = `https://runticket2.vercel.app/reset-password?token=${token}`;
+    const resetUrl = `https://dictsupport.vercel.app/reset-password?token=${token}`;
     try {
       const emailHtml = `
         <!DOCTYPE html>
@@ -381,7 +381,7 @@ export const sendStatusUpdateEmail = action({
                 }
                 
                 <div style="text-align: center;">
-                  <a href="https://runticket2.vercel.app/track" class="track-button">View Ticket Details</a>
+                  <a href="https://dictsupport.vercel.app/track" class="track-button">View Ticket Details</a>
                 </div>
                 
                 <p style="margin-top: 20px;">You will continue to receive updates as your ticket progresses.</p>
