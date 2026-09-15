@@ -271,64 +271,38 @@ const Index = () => {
           })}
         </div>
 
-        {/* Track Existing Ticket Banner - Prominently Underneath the 3 Cards */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white p-6 sm:p-8 md:p-10 border border-blue-900/50">
-          {/* Subtle Background Glow Effect */}
-          <div className="absolute -top-24 -right-24 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold">
-                <Search className="h-3.5 w-3.5" />
-                <span>Existing Support Ticket</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Already submitted a support ticket?
+        {/* Track Existing Ticket Banner - Streamlined */}
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white p-6 sm:p-8 border border-blue-900/50 shadow-xl">
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-1 text-center md:text-left">
+              <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                <Search className="h-5 w-5 text-blue-400" />
+                <span>Track Existing Ticket</span>
               </h2>
-              <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
-                Track your ticket's real-time resolution status, read staff responses, and communicate with the DICT support team.
+              <p className="text-slate-300 text-sm max-w-md">
+                Check real-time status and responses for your ticket.
               </p>
             </div>
 
-            {/* Right Quick Track Form */}
-            <div className="lg:col-span-5 bg-white/10 dark:bg-slate-900/60 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/10 shadow-inner">
-              <form onSubmit={handleQuickTrack} className="space-y-3">
-                <label className="text-xs font-semibold text-blue-200 block uppercase tracking-wider">
-                  Quick Track Lookup
-                </label>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="relative flex-1">
-                    <Ticket className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <input
-                      type="text"
-                      placeholder="e.g., DICT-20261028-1234"
-                      value={quickTicketId}
-                      onChange={(e) => setQuickTicketId(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>Track Status</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between text-xs text-slate-400 pt-1 px-1">
-                  <span>Enter your reference Ticket ID</span>
-                  <button
-                    type="button"
-                    onClick={() => navigate("/track")}
-                    className="text-blue-300 hover:text-white underline font-medium"
-                  >
-                    Advanced Search
-                  </button>
-                </div>
-              </form>
-            </div>
+            <form onSubmit={handleQuickTrack} className="w-full md:w-auto flex flex-col sm:flex-row gap-2.5 min-w-[300px] sm:min-w-[420px]">
+              <div className="relative flex-1">
+                <Ticket className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Enter Ticket ID (e.g., DICT-20261028-1234)"
+                  value={quickTicketId}
+                  onChange={(e) => setQuickTicketId(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                <span>Track Ticket</span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
         </div>
 
