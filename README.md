@@ -20,12 +20,14 @@ The **DICT Support Portal** (Directorate of Information and Communication Techno
 
 ### ⚙️ Admin & Department Management
 - **Role-Based Access Control**: Separate views and permissions for Super Admins, Department Admins, and Support Staff.
+- **Default Superadmin Access**: Pre-configured Superadmin account for Data Protection Office (`dpo@run.edu.ng`).
 - **Department & Admin Management**: Manage support personnel assignments and handle department-specific tickets.
-- **Analytics & Activity Dashboard**: Visual charts, ticket volume statistics, and resolution metrics.
-- **Report Export**: Export admin activity and ticket analytics reports to PDF/CSV for departmental reporting.
+- **Analytics & Activity Dashboard**: Visual bar charts, ticket volume statistics, admin distribution, and resolution metrics.
+- **Report Export**: Export admin activity and ticket analytics reports to **PDF** or **CSV** for departmental reporting.
 - **Audit Logging**: Comprehensive admin activity tracking.
 
-### ✉️ Email Notifications (Resend Integration)
+### ✉️ Email Notifications (Resend API Integration)
+- 100% integrated with the **Resend API** (`api.resend.com`).
 - Automated ticket creation confirmation emails to users.
 - Notification emails to assigned DICT department staff.
 - Automatic email alerts on ticket status changes (Open, In Progress, Resolved, Closed).
@@ -35,10 +37,11 @@ The **DICT Support Portal** (Directorate of Information and Communication Techno
 
 ## 🔄 Recent Updates
 
+- **Resend API Integration**: Replaced legacy email providers with the **Resend API** for fast, reliable transactional email delivery.
+- **Superadmin Account Provisioning**: Configured and seeded the default Superadmin account (`dpo@run.edu.ng`).
 - **DICT Rebranding**: Updated portal title, metadata, header banners, and email signatures to align with the **Directorate of Information and Communication Technology (DICT)**.
 - **Refined Department Routing**: Replaced legacy department mappings with updated DICT support channels (PG, UG, Email, Hardware/Network, Data Protection, Staff Portal).
-- **Admin Report Exporting**: Added export functionalities for generating PDF and structured reports from the admin dashboard.
-- **Convex Email Actions**: Updated automated Resend HTTP request payloads for uniform DICT Support Portal branding.
+- **Admin Report Exporting**: Added one-click export functionalities for generating PDF and structured CSV reports from the admin dashboard.
 
 ---
 
@@ -63,13 +66,14 @@ ticket-flow-uni/
 │   ├── auth.js                 # Authentication logic & password hashing
 │   ├── departments.js          # Department admin mapping & queries
 │   ├── emails.js               # Resend transactional email actions
+│   ├── migrations.js           # Role migrations & admin seed scripts
 │   ├── roles.js                # Role definitions & RBAC checks
 │   ├── schema.js               # Convex database schema definition
 │   └── tickets.js              # Ticket CRUD & status mutation logic
 ├── src/
 │   ├── components/             # Reusable UI components & Shadcn elements
 │   ├── hooks/                  # Custom React hooks
-│   ├── lib/                    # Helper utilities
+│   ├── lib/                    # Helper utilities & export tools
 │   ├── pages/                  # Application views & pages
 │   │   ├── AdminDashboard.tsx           # Main admin control panel
 │   │   ├── AdminActivityDashboard.tsx   # Activity & audit logs
@@ -93,9 +97,24 @@ ticket-flow-uni/
 
 - **Node.js** (v18.x or higher)
 - **npm** or **bun** / **yarn**
-- A **Convex** account & deployment project
+- A **Convex** account & **Resend** account
 
-### Installation
+### Environment Setup
+
+Create a `.env` file in the project root:
+```env
+CONVEX_DEPLOYMENT="dev:brazen-fly-914"
+VITE_CONVEX_URL="https://brazen-fly-914.convex.cloud"
+RESEND_API_KEY="re_your_resend_api_key_here"
+```
+
+Set environment variables in your Convex Cloud Dashboard:
+```bash
+npx convex env set RESEND_API_KEY re_your_resend_api_key_here
+npx convex env set SENDER_EMAIL "DICT Support Portal <onboarding@resend.dev>"
+```
+
+### Installation & Running Locally
 
 1. **Clone the repository**:
    ```bash
@@ -108,18 +127,7 @@ ticket-flow-uni/
    npm install
    ```
 
-3. **Environment Setup**:
-   Create a `.env` file in the project root:
-   ```env
-   VITE_CONVEX_URL=https://<your-convex-deployment>.convex.cloud
-   ```
-
-4. **Start the Convex Development Server**:
-   ```bash
-   npx convex dev
-   ```
-
-5. **Start the Frontend Local Development Server**:
+3. **Start the Frontend Development Server**:
    ```bash
    # On Windows (PowerShell/CMD)
    npm.cmd run dev
