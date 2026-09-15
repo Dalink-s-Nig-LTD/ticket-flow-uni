@@ -70,12 +70,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const natureOptions = [
-  "ICT/Portal",
-  "Payment/Bursary",
-  "Exams/Results",
-  "Hostel/Accommodation",
-  "Library",
-  "Registrar",
+  "PG Portal Support",
+  "UG Portal Support",
+  "Email Support",
+  "Hardware Support",
+  "Data Protection Support",
+  "Staff Portal Support",
   "Others",
 ];
 

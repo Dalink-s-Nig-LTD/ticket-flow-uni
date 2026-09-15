@@ -157,6 +157,13 @@ export const createTicket = mutation({
         }
         // Validate nature of complaint against allowed values
         const allowedNatures = [
+            "PG Portal Support",
+            "UG Portal Support",
+            "Email Support",
+            "Hardware Support",
+            "Hardware/Network Support",
+            "Data Protection Support",
+            "Staff Portal Support",
             "ICT/Portal",
             "Payment/Bursary",
             "Exams/Results",
