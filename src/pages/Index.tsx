@@ -315,7 +315,7 @@ const Index = () => {
       <footer className="bg-primary text-white mt-12 md:mt-16">
         <div className="container py-6 md:py-8 text-center px-4">
           <p className="font-medium mb-2 text-sm md:text-base">
-            ©2025 @DICT,Redeemer's University All Rights Reserved.
+            ©2026 @DICT,Redeemer's University All Rights Reserved.
           </p>
         </div>
       </footer>
