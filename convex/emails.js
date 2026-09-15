@@ -18,12 +18,12 @@ export const sendTicketEmail = action({
     },
     handler: async (ctx, args) => {
         const departmentEmails = {
-            "ICT/Portal": "ict@run.edu.ng",
-            "Payment/Bursary": "studentaccount@run.edu.ng",
-            "Exams/Results": "ict@run.edu.ng",
-            "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
-            "Library": "library@run.edu.ng",
-            "Registrar": "registrar@run.edu.ng",
+            "PG Portal Support": "ict@run.edu.ng",
+            "UG Portal Support": "ict@run.edu.ng",
+            "Email Support": "ict@run.edu.ng",
+            "Hardware/Network Support": "ict@run.edu.ng",
+            "Data Protection Support": "dpo@run.edu.ng",
+            "Staff Portal Support": "ict@run.edu.ng",
             "Others": "ict@run.edu.ng",
         };
         const staffEmail = departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
@@ -49,7 +49,7 @@ export const sendTicketEmail = action({
             <div class="container">
               <div class="header">
                 <h1>Ticket Confirmation</h1>
-                <p>Redeemer's University Support Portal</p>
+                <p>DICT Support Portal</p>
               </div>
               <div class="content">
                 <p>Dear ${escapeHtml(args.name)},</p>
@@ -103,7 +103,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
+          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: args.email }],
           subject: `Ticket Confirmation - ${args.ticketId}`,
           htmlContent: studentEmailHtml,
@@ -189,7 +189,7 @@ export const sendTicketEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
+          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: staffEmail }],
           subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
           htmlContent: staffEmailHtml,
@@ -239,7 +239,7 @@ export const sendPasswordResetEmail = action({
             <div class="container">
               <div class="header">
                 <h1>🔐 Password Reset Request</h1>
-                <p>Redeemer's University Admin Portal</p>
+                <p>DICT Admin Portal</p>
               </div>
               <div class="content">
                 <p>Hello,</p>
@@ -263,7 +263,7 @@ export const sendPasswordResetEmail = action({
                 <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">For security reasons, never share this link with anyone. If you're having trouble, contact the IT department.</p>
               </div>
               <div class="footer">
-                <p>Redeemer's University Support Portal<br>
+                <p>DICT Support Portal<br>
                 This is an automated message, please do not reply.</p>
               </div>
             </div>
@@ -278,9 +278,9 @@ export const sendPasswordResetEmail = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
+          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
           to: [{ email: email }],
-          subject: "Password Reset Request - RUN Admin Portal",
+          subject: "Password Reset Request - DICT Admin Portal",
           htmlContent: emailHtml,
         }),
       });
@@ -380,7 +380,7 @@ export const sendStatusUpdateEmail = action({
                 <p style="margin-top: 20px;">You will continue to receive updates as your ticket progresses.</p>
               </div>
               <div class="footer">
-                <p>Redeemer's University Support Portal<br>
+                <p>DICT Support Portal<br>
                 If you have questions, please reply with your ticket ID.</p>
               </div>
             </div>
@@ -394,7 +394,7 @@ export const sendStatusUpdateEmail = action({
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    sender: { name: "RUN Support Portal", email: "shawolhorizon@gmail.com" },
+                    sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
                     to: [{ email: args.email }],
                     subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
                     htmlContent: emailHtml,
