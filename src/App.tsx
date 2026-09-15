@@ -17,6 +17,7 @@ import DepartmentAdmin from "./pages/DepartmentAdmin";
 import TicketDetail from "./pages/TicketDetail";
 import DepartmentManagement from "./pages/DepartmentManagement";
 import AdminActivityDashboard from "./pages/AdminActivityDashboard";
+import StaffTicket from "./pages/StaffTicket";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
             />
             <Route path="/confirmation" element={<Confirmation />} />
             <Route path="/track" element={<TrackTicket />} />
+            <Route path="/create-staff" element={<StaffTicket />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

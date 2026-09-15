@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Ticket, Search, GraduationCap, UserPlus } from "lucide-react";
+import { Ticket, Search, GraduationCap, UserPlus, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -164,6 +164,28 @@ const Index = () => {
                 <Card>
                   <CardHeader>
                     <div className="h-14 w-14 rounded-xl bg-primary flex items-center justify-center mb-3">
+                      <Briefcase className="h-7 w-7 text-white" />
+                    </div>
+                    <CardTitle className="text-lg">Staff</CardTitle>
+                    <CardDescription className="text-sm">
+                      University staff? Use your Staff ID and RUN email to
+                      submit a ticket.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      onClick={() => navigate("/create-staff")}
+                      className="w-full"
+                    >
+                      Create Ticket →
+                    </Button>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+              <CarouselItem>
+                <Card>
+                  <CardHeader>
+                    <div className="h-14 w-14 rounded-xl bg-primary flex items-center justify-center mb-3">
                       <Search className="h-7 w-7 text-white" />
                     </div>
                     <CardTitle className="text-lg">
@@ -187,7 +209,7 @@ const Index = () => {
             </CarouselContent>
           </Carousel>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
             <Card>
               <CardHeader>
                 <div className="h-16 w-16 rounded-xl bg-primary flex items-center justify-center mb-4">
@@ -220,6 +242,27 @@ const Index = () => {
               <CardContent>
                 <Button
                   onClick={() => navigate("/create-prospective")}
+                  className="w-full"
+                >
+                  Create Ticket →
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="h-16 w-16 rounded-xl bg-primary flex items-center justify-center mb-4">
+                  <Briefcase className="h-8 w-8 text-white" />
+                </div>
+                <CardTitle className="text-xl">Staff</CardTitle>
+                <CardDescription className="text-base">
+                  University staff? Use your Staff ID and RUN email to submit a
+                  ticket.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={() => navigate("/create-staff")}
                   className="w-full"
                 >
                   Create Ticket →
