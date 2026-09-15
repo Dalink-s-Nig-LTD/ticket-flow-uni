@@ -197,7 +197,7 @@ export const createTicket = mutation({
             }
         }
         catch { }
-        const ticketId = `UNIU-${dateStr}-${String(randomNum).padStart(4, '0')}`;
+        const ticketId = `DICT-${dateStr}-${String(randomNum).padStart(4, '0')}`;
         try {
             const newTicketId = await ctx.db.insert("tickets", {
                 ticket_id: ticketId,

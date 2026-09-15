@@ -52,49 +52,46 @@ const Index = () => {
     {
       id: "student",
       title: "Existing Student",
-      subtitle: "Enrolled Undergraduates & Postgraduates",
-      description:
-        "Submit support requests for portal access, course registration, result verification, or ICT assistance.",
-      requirement: "Matriculation Number & RUN Email",
-      badgeText: "Enrolled Students",
+      subtitle: "Enrolled Students",
+      description: "For portal access, course registration, results, and ICT support.",
+      requirement: "Matric No. & RUN Email",
+      badgeText: "Student",
       badgeColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300",
       accentGradient: "from-blue-600 to-indigo-600",
       bgGlow: "hover:border-blue-400/50 hover:shadow-blue-500/10",
       iconBg: "bg-gradient-to-br from-blue-500 to-indigo-700",
       icon: GraduationCap,
-      actionText: "Create Student Ticket",
+      actionText: "Create Ticket",
       route: "/create",
     },
     {
       id: "prospective",
       title: "Prospective Student",
-      subtitle: "New Applicants & Transfer Candidates",
-      description:
-        "Get instant assistance with application portal issues, screening updates, or payment verification.",
-      requirement: "JAMB Registration No. & Active Email",
-      badgeText: "New Applicants",
+      subtitle: "Applicants & Transfers",
+      description: "For admission portal, screening status, and fee verification.",
+      requirement: "JAMB Reg No. & Email",
+      badgeText: "Applicant",
       badgeColor: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300",
       accentGradient: "from-emerald-600 to-teal-600",
       bgGlow: "hover:border-emerald-400/50 hover:shadow-emerald-500/10",
       iconBg: "bg-gradient-to-br from-emerald-500 to-teal-700",
       icon: UserPlus,
-      actionText: "Create Applicant Ticket",
+      actionText: "Create Ticket",
       route: "/create-prospective",
     },
     {
       id: "staff",
       title: "Staff & Faculty",
-      subtitle: "Academic & Administrative Personnel",
-      description:
-        "Dedicated helpdesk for work station setup, institutional email, official portal issues, and IT infrastructure.",
-      requirement: "Staff ID Number & RUN Email",
-      badgeText: "Faculty & Staff",
+      subtitle: "Academic & Admin Staff",
+      description: "For staff email, workstations, portal issues, and IT services.",
+      requirement: "Staff ID & RUN Email",
+      badgeText: "Staff",
       badgeColor: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300",
       accentGradient: "from-purple-600 to-violet-600",
       bgGlow: "hover:border-purple-400/50 hover:shadow-purple-500/10",
       iconBg: "bg-gradient-to-br from-purple-500 to-violet-700",
       icon: Briefcase,
-      actionText: "Create Staff Ticket",
+      actionText: "Create Ticket",
       route: "/create-staff",
     },
   ];
@@ -309,7 +306,7 @@ const Index = () => {
                     <Ticket className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <input
                       type="text"
-                      placeholder="e.g., UNIU-20261028-1234"
+                      placeholder="e.g., DICT-20261028-1234"
                       value={quickTicketId}
                       onChange={(e) => setQuickTicketId(e.target.value)}
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"

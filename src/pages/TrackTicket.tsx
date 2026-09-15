@@ -127,7 +127,7 @@ const TrackTicket = () => {
                       <FormLabel>Ticket ID</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g., UNIU-20251028-1234"
+                          placeholder="e.g., DICT-20261028-1234"
                           {...field}
                         />
                       </FormControl>
