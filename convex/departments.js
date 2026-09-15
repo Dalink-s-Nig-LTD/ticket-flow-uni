@@ -3,12 +3,12 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 
 export const DEPARTMENT_ADMINS = {
-  "ICT/Portal": "ict@run.edu.ng",
-  "Payment/Bursary": "studentaccount@run.edu.ng",
-  "Exams/Results": "ict@run.edu.ng",
-  "Hostel/Accommodation": "dssscomplaints@run.edu.ng",
-  "Library": "library@run.edu.ng",
-  "Registrar": "registrar@run.edu.ng",
+  "PG Portal Support": "ict@run.edu.ng",
+  "UG Portal Support": "ict@run.edu.ng",
+  "Email Support": "ict@run.edu.ng",
+  "Hardware Support": "ict@run.edu.ng",
+  "Data Protection Support": "dpo@run.edu.ng",
+  "Staff Portal Support": "ict@run.edu.ng",
   "Others": "ict@run.edu.ng"
 };
 
