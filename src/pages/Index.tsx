@@ -185,10 +185,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-slate-900/85 to-indigo-950/90 z-[5]" />
 
         <div className="container text-center px-4 relative z-10 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-200 text-xs md:text-sm font-medium mb-6 animate-pulse">
-            <Sparkles className="h-4 w-4 text-amber-400" />
-            <span>Official Redeemer's University Support System</span>
-          </div>
+
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 md:mb-6 text-white leading-tight">
             How can we assist you today?
@@ -338,9 +335,6 @@ const Index = () => {
         {/* How It Works Section */}
         <div className="mt-16 md:mt-24 max-w-5xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-10 border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-2">
-              Simple Workflow
-            </h2>
             <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
               How the Support System Works
             </h3>
@@ -376,18 +370,8 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 mt-16 md:mt-24">
         <div className="container py-8 md:py-12 text-center px-4">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <img
-              src={ruLogo}
-              alt="Redeemer's University Logo"
-              className="h-10 w-auto opacity-90"
-            />
-          </div>
           <p className="font-medium text-sm text-slate-300">
             ©2026 @DICT, Redeemer's University All Rights Reserved.
-          </p>
-          <p className="text-xs text-slate-500 mt-2">
-            Directorate of Information & Communication Technology (DICT) • Redeemer's University, Ede, Osun State
           </p>
         </div>
       </footer>
