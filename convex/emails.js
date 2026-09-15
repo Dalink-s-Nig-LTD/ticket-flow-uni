@@ -1,7 +1,45 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { escapeHtml, sanitizeForEmail } from "./utils";
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
+
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const SENDER_EMAIL = process.env.SENDER_EMAIL || "DICT Support Portal <onboarding@resend.dev>";
+
+async function sendEmailWithResend({ to, subject, htmlContent }) {
+  if (!RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not configured in environment variables");
+    return { ok: false, error: "RESEND_API_KEY is missing" };
+  }
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: SENDER_EMAIL,
+        to: Array.isArray(to) ? to : [to],
+        subject,
+        html: htmlContent,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Resend API error:", err);
+      return { ok: false, error: err };
+    }
+
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error("Failed to send email via Resend:", err);
+    return { ok: false, error: String(err) };
+  }
+}
+
 export const sendTicketEmail = action({
   args: {
     ticketId: v.string(),
@@ -24,9 +62,10 @@ export const sendTicketEmail = action({
       "Hardware/Network Support": "ict@run.edu.ng",
       "Data Protection Support": "dpo@run.edu.ng",
       "Staff Portal Support": "ict@run.edu.ng",
-      "Others": "ict@run.edu.ng",
+      Others: "ict@run.edu.ng",
     };
-    const staffEmail = departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
+    const staffEmail =
+      departmentEmails[args.natureOfComplaint] || departmentEmails["Others"];
     try {
       // Send confirmation email to student
       const studentEmailHtml = `
@@ -96,24 +135,11 @@ export const sendTicketEmail = action({
         </html>
       `;
 
-      const studentResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "api-key": BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
-          to: [{ email: args.email }],
-          subject: `Ticket Confirmation - ${args.ticketId}`,
-          htmlContent: studentEmailHtml,
-        }),
+      await sendEmailWithResend({
+        to: args.email,
+        subject: `Ticket Confirmation - ${args.ticketId}`,
+        htmlContent: studentEmailHtml,
       });
-
-      if (!studentResponse.ok) {
-        const error = await studentResponse.text();
-        console.error("Failed to send student email:", error);
-      }
 
       // Send notification email to staff
       const staffEmailHtml = `
@@ -151,9 +177,9 @@ export const sendTicketEmail = action({
                   <div class="info-row">
                     <span class="label">Email:</span> ${escapeHtml(args.email)}
                   </div>
-                  ${args.phone ? `<div class="info-row"><span class="label">Phone:</span> ${escapeHtml(args.phone)}</div>` : ''}
-                  ${args.matricNumber ? `<div class="info-row"><span class="label">Matric Number:</span> ${escapeHtml(args.matricNumber)}</div>` : ''}
-                  ${args.jambNumber ? `<div class="info-row"><span class="label">JAMB Number:</span> ${escapeHtml(args.jambNumber)}</div>` : ''}
+                  ${args.phone ? `<div class="info-row"><span class="label">Phone:</span> ${escapeHtml(args.phone)}</div>` : ""}
+                  ${args.matricNumber ? `<div class="info-row"><span class="label">Matric Number:</span> ${escapeHtml(args.matricNumber)}</div>` : ""}
+                  ${args.jambNumber ? `<div class="info-row"><span class="label">JAMB Number:</span> ${escapeHtml(args.jambNumber)}</div>` : ""}
                   <div class="info-row">
                     <span class="label">Department:</span> ${escapeHtml(args.department)}
                   </div>
@@ -182,29 +208,13 @@ export const sendTicketEmail = action({
         </html>
       `;
 
-      const staffResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "api-key": BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
-          to: [{ email: staffEmail }],
-          subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
-          htmlContent: staffEmailHtml,
-        }),
+      await sendEmailWithResend({
+        to: staffEmail,
+        subject: `New Ticket: ${args.subject} [${args.ticketId}]`,
+        htmlContent: staffEmailHtml,
       });
 
-      if (!staffResponse.ok) {
-        const error = await staffResponse.text();
-        console.error("Failed to send staff email:", error);
-      }
-
-      console.log("✅ Emails sent successfully");
-      console.log("Student email:", args.email);
-      console.log("Staff email:", staffEmail);
-
+      console.log("✅ Resend emails sent successfully");
       return { success: true, studentEmail: args.email, staffEmail };
     } catch (error) {
       console.error("Email sending error:", error);
@@ -212,6 +222,7 @@ export const sendTicketEmail = action({
     }
   },
 });
+
 export const sendPasswordResetEmail = action({
   args: {
     email: v.string(),
@@ -271,27 +282,18 @@ export const sendPasswordResetEmail = action({
         </html>
       `;
 
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "api-key": BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
-          to: [{ email: email }],
-          subject: "Password Reset Request - DICT Admin Portal",
-          htmlContent: emailHtml,
-        }),
+      const result = await sendEmailWithResend({
+        to: email,
+        subject: "Password Reset Request - DICT Admin Portal",
+        htmlContent: emailHtml,
       });
 
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("Failed to send password reset email:", error);
-        return { success: false, error };
+      if (!result.ok) {
+        console.error("Failed to send password reset email via Resend:", result.error);
+        return { success: false, error: result.error };
       }
 
-      console.log("✅ Password reset email sent to:", email);
+      console.log("✅ Password reset email sent via Resend to:", email);
       return { success: true, email };
     } catch (error) {
       console.error("Password reset email error:", error);
@@ -299,6 +301,7 @@ export const sendPasswordResetEmail = action({
     }
   },
 });
+
 export const sendStatusUpdateEmail = action({
   args: {
     ticketId: v.string(),
@@ -366,12 +369,16 @@ export const sendStatusUpdateEmail = action({
                   </div>
                 </div>
                 
-                ${args.staffResponse ? `
+                ${
+                  args.staffResponse
+                    ? `
                   <div class="response-box">
                     <p style="margin: 0 0 10px 0;"><strong>💬 Staff Response:</strong></p>
                     <p style="margin: 0;">${sanitizeForEmail(args.staffResponse)}</p>
                   </div>
-                ` : ''}
+                `
+                    : ""
+                }
                 
                 <div style="text-align: center;">
                   <a href="https://runticket2.vercel.app/track" class="track-button">View Ticket Details</a>
@@ -387,28 +394,21 @@ export const sendStatusUpdateEmail = action({
           </body>
         </html>
       `;
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "api-key": BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: { name: "DICT Support Portal", email: "shawolhorizon@gmail.com" },
-          to: [{ email: args.email }],
-          subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
-          htmlContent: emailHtml,
-        }),
+
+      const result = await sendEmailWithResend({
+        to: args.email,
+        subject: `Ticket Update: ${args.subject} [${args.ticketId}]`,
+        htmlContent: emailHtml,
       });
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("Failed to send status update email:", error);
-        return { success: false, error };
+
+      if (!result.ok) {
+        console.error("Failed to send status update email via Resend:", result.error);
+        return { success: false, error: result.error };
       }
-      console.log("✅ Status update email sent to:", args.email);
+
+      console.log("✅ Status update email sent via Resend to:", args.email);
       return { success: true, email: args.email };
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Status update email error:", error);
       return { success: false, error: String(error) };
     }

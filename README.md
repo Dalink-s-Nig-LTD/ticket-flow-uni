@@ -25,7 +25,7 @@ The **DICT Support Portal** (Directorate of Information and Communication Techno
 - **Report Export**: Export admin activity and ticket analytics reports to PDF/CSV for departmental reporting.
 - **Audit Logging**: Comprehensive admin activity tracking.
 
-### ✉️ Email Notifications (Brevo Integration)
+### ✉️ Email Notifications (Resend Integration)
 - Automated ticket creation confirmation emails to users.
 - Notification emails to assigned DICT department staff.
 - Automatic email alerts on ticket status changes (Open, In Progress, Resolved, Closed).
@@ -38,7 +38,7 @@ The **DICT Support Portal** (Directorate of Information and Communication Techno
 - **DICT Rebranding**: Updated portal title, metadata, header banners, and email signatures to align with the **Directorate of Information and Communication Technology (DICT)**.
 - **Refined Department Routing**: Replaced legacy department mappings with updated DICT support channels (PG, UG, Email, Hardware/Network, Data Protection, Staff Portal).
 - **Admin Report Exporting**: Added export functionalities for generating PDF and structured reports from the admin dashboard.
-- **Convex Email Actions**: Updated automated Brevo HTTP request payloads for uniform DICT Support Portal branding.
+- **Convex Email Actions**: Updated automated Resend HTTP request payloads for uniform DICT Support Portal branding.
 
 ---
 
@@ -48,7 +48,7 @@ The **DICT Support Portal** (Directorate of Information and Communication Techno
 - **UI & Styling**: [Tailwind CSS](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/), [Lucide React Icons](https://lucide.dev/)
 - **Backend & Database**: [Convex](https://www.convex.dev/) (Serverless database, reactive queries, mutations, and actions)
 - **Database Migrations / Backup**: [Supabase](https://supabase.com/) PostgreSQL schemas & RLS policies
-- **Email Delivery**: Brevo (formerly Sendinblue) Transactional Email API via Convex server actions
+- **Email Delivery**: [Resend](https://resend.com/) Transactional Email API via Convex server actions
 - **Reporting & Export**: `jspdf` & `jspdf-autotable`
 
 ---
@@ -62,7 +62,7 @@ ticket-flow-uni/
 │   ├── admin_analytics.js      # Analytics queries for admin dashboard
 │   ├── auth.js                 # Authentication logic & password hashing
 │   ├── departments.js          # Department admin mapping & queries
-│   ├── emails.js               # Brevo transactional email actions
+│   ├── emails.js               # Resend transactional email actions
 │   ├── roles.js                # Role definitions & RBAC checks
 │   ├── schema.js               # Convex database schema definition
 │   └── tickets.js              # Ticket CRUD & status mutation logic
