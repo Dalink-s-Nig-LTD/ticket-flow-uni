@@ -1,10 +1,9 @@
 import { ConvexReactClient } from "convex/react";
 
-// Check if Convex URL is properly configured
-const convexUrl = import.meta.env.VITE_CONVEX_URL;
-export const isConvexEnabled = convexUrl && convexUrl !== "your-convex-url-here" && convexUrl.startsWith("https://");
+const convexUrl =
+  import.meta.env.VITE_CONVEX_URL ||
+  "https://brazen-fly-914.convex.cloud";
 
-// Initialize Convex client only if URL is valid
-export const convex = isConvexEnabled 
-  ? new ConvexReactClient(convexUrl as string)
-  : null;
+export const isConvexEnabled = Boolean(convexUrl && convexUrl.startsWith("https://"));
+
+export const convex = new ConvexReactClient(convexUrl);

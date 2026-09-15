@@ -1,11 +1,7 @@
 import { ConvexReactClient } from "convex/react";
 
-const convexUrl = import.meta.env.VITE_CONVEX_URL;
-
-if (!convexUrl) {
-  throw new Error(
-    "VITE_CONVEX_URL is not set. Get your URL from https://dashboard.convex.dev"
-  );
-}
+const convexUrl =
+  import.meta.env.VITE_CONVEX_URL ||
+  "https://brazen-fly-914.convex.cloud";
 
 export const convex = new ConvexReactClient(convexUrl);
